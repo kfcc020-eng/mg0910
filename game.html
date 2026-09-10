@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>김금고의 MG 금고 탈출 작전</title>
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --panel: #eef4fb;
+      --text: #1a2230;
+      --muted: #66758a;
+      --border: #d7e1ec;
+      --accent: #1668c7;
+      --accent-soft: #e8f2ff;
+      --green: #34a96a;
+      --shadow: 0 10px 28px rgba(20, 44, 84, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        "Pretendard",
+        "Noto Sans KR",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    }
+
+    .app {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .shell {
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      background:
+        linear-gradient(135deg, var(--panel), var(--card));
+      border-bottom: 1px solid var(--border);
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .hud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .hud span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      font-size: 12px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .canvas-wrap {
+      padding: 12px;
+      background: var(--panel);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #8fd3ff;
+      image-rendering: pixelated;
+      outline: none;
+    }
+
+    canvas:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(22, 104, 199, 0.12);
+    }
+
+    .mission {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--card);
+    }
+
+    .mission-main {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .mission-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+      padding: 12px 16px;
+    }
+
+    button {
+      min-height: 44px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--text);
+      font-weight: 850;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    button.fire {
+      background: #ff8e3c;
+      border-color: #ff8e3c;
+      color: white;
+    }
+
+    .guide {
+      padding: 0 16px 16px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      font-size: 11px;
+      font-weight: 800;
+      margin-right: 4px;
+      color: var(--accent);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 12px; }
+      .controls {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .full-row {
+        grid-column: 1 / -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="shell">
+      <div class="top">
+        <div>
+          <div class="title">🌟 김금고의 MG 금고 탈출 작전</div>
+          <div class="subtitle">
+            열쇠 3개를 모으고 버섯·불꽃 아이템을 활용해 황금 금고 게이트를 여세요.
+          </div>
+        </div>
+
+        <div class="hud" aria-live="polite">
+          <span>⭐ <b id="score">0000</b></span>
+          <span>🪙 <b id="coin">0/12</b></span>
+          <span>🔑 <b id="key">0/3</b></span>
+          <span>❤️ <b id="life">3</b></span>
+          <span>⏱ <b id="time">95</b></span>
+          <span>⚡ <b id="power">기본</b></span>
+        </div>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas
+          id="game"
+          width="800"
+          height="420"
+          tabindex="0"
+          aria-label="김금고 횡스크롤 플랫폼 게임"
+        ></canvas>
+      </div>
+
+      <div class="mission">
+        <div>
+          <div id="msg" class="mission-main" aria-live="polite">
+            🔑 열쇠 3개를 모으고 금고 게이트까지 이동하세요.
+          </div>
+          <div class="mission-sub">
+            버섯은 강화, 불꽃은 원거리 공격 능력을 제공합니다.
+          </div>
+        </div>
+        <div class="mission-sub">
+          <span class="tag">CHECKPOINT</span>
+          중간 저장 지점 있음
+        </div>
+      </div>
+
+      <div class="controls">
+        <button type="button" id="left">◀ 왼쪽</button>
+        <button type="button" id="right">오른쪽 ▶</button>
+        <button type="button" id="jump" class="primary">⬆ 점프</button>
+        <button type="button" id="fire" class="fire">🔥 불꽃</button>
+        <button type="button" id="pause">⏸ 일시정지</button>
+        <button type="button" id="restart" class="full-row">↻ 처음부터</button>
+      </div>
+
+      <div class="guide">
+        키보드:
+        <b>← → / A D</b> 이동 ·
+        <b>↑ / W / Space</b> 점프 ·
+        <b>F / X</b> 불꽃 발사
+        <br />
+        <span class="tag">TIP</span>
+        버섯을 먹으면 한 번 더 버틸 수 있고,
+        불꽃을 먹으면 적을 멀리서 처치할 수 있습니다.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+
+      const scoreEl = document.getElementById("score");
+      const coinEl = document.getElementById("coin");
+      const keyEl = document.getElementById("key");
+      const lifeEl = document.getElementById("life");
+      const timeEl = document.getElementById("time");
+      const powerEl = document.getElementById("power");
+      const msgEl = document.getElementById("msg");
+
+      const pauseBtn = document.getElementById("pause");
+      const restartBtn = document.getElementById("restart");
+      const fireBtn = document.getElementById("fire");
+
+      const W = 800;
+      const H = 420;
+      const WORLD = 3000;
+      const GRAVITY = 1500;
+
+      let score = 0;
+      let lives = 3;
+      let timeLeft = 95;
+      let paused = false;
+      let gameOver = false;
+      let clear = false;
+      let checkpoint = false;
+      let cameraX = 0;
+      let last = 0;
+
+      const input = {
+        left: false,
+        right: false,
+        jump: false,
+        fire: false
+      };
+
+      const player = {
+        x: 70,
+        y: 280,
+        w: 34,
+        h: 48,
+        vx: 0,
+        vy: 0,
+        speed: 235,
+        jump: 570,
+        onGround: false,
+        inv: 0,
+        respawnX: 70,
+        respawnY: 280,
+        power: "normal", // normal / big / fire
+        fireCooldown: 0,
+        face: 1
+      };
+
+      let particles = [];
+      let fireballs = [];
+
+      const grounds = [
+        { x: 0, y: 352, w: 520, h: 80 },
+        { x: 610, y: 352, w: 430, h: 80 },
+        { x: 1140, y: 352, w: 370, h: 80 },
+        { x: 1610, y: 352, w: 520, h: 80 },
+        { x: 2220, y: 352, w: 380, h: 80 },
+        { x: 2700, y: 352, w: 300, h: 80 }
+      ];
+
+      const platforms = [
+        { x: 210, y: 292, w: 120, h: 18 },
+        { x: 390, y: 245, w: 100, h: 18 },
+        { x: 650, y: 285, w: 100, h: 18 },
+        { x: 800, y: 220, w: 110, h: 18 },
+        { x: 970, y: 270, w: 90, h: 18 },
+        { x: 1190, y: 265, w: 100, h: 18 },
+        { x: 1360, y: 210, w: 105, h: 18 },
+        { x: 1660, y: 270, w: 100, h: 18 },
+        { x: 1810, y: 215, w: 110, h: 18 },
+        { x: 2020, y: 275, w: 95, h: 18 },
+        { x: 2280, y: 260, w: 100, h: 18 },
+        { x: 2440, y: 205, w: 110, h: 18 },
+        { x: 2730, y: 275, w: 90, h: 18 }
+      ];
+
+      const movers = [
+        { x: 535, y: 270, w: 70, h: 16, min: 525, max: 600, v: 55, dx: 0 },
+        { x: 1518, y: 250, w: 85, h: 16, min: 1515, max: 1605, v: 65, dx: 0 },
+        { x: 2610, y: 245, w: 85, h: 16, min: 2605, max: 2690, v: 72, dx: 0 }
+      ];
+
+      const spikes = [
+        { x: 710, y: 332, w: 54, h: 20 },
+        { x: 1265, y: 332, w: 48, h: 20 },
+        { x: 1880, y: 332, w: 56, h: 20 },
+        { x: 2320, y: 332, w: 52, h: 20 },
+        { x: 2800, y: 332, w: 45, h: 20 }
+      ];
+
+      const coins = [
+        [260, 260], [435, 210], [680, 250], [855, 180],
+        [1005, 235], [1235, 230], [1410, 175], [1695, 235],
+        [1855, 180], [2055, 240], [2325, 225], [2495, 170]
+      ].map(([x, y]) => ({ x, y, taken: false }));
+
+      const keys = [
+        { x: 850, y: 170, taken: false },
+        { x: 1410, y: 160, taken: false },
+        { x: 2495, y: 158, taken: false }
+      ];
+
+      const mushrooms = [
+        { x: 460, y: 225, taken: false },
+        { x: 1825, y: 195, taken: false }
+      ];
+
+      const flowers = [
+        { x: 2060, y: 240, taken: false }
+      ];
+
+      const enemies = [
+        { x: 335, y: 320, w: 32, h: 32, v: -55, min: 330, max: 500, alive: true },
+        { x: 890, y: 320, w: 32, h: 32, v: 62, min: 840, max: 1010, alive: true },
+        { x: 1290, y: 320, w: 32, h: 32, v: -66, min: 1160, max: 1460, alive: true },
+        { x: 1730, y: 320, w: 32, h: 32, v: 63, min: 1620, max: 1870, alive: true },
+        { x: 2080, y: 320, w: 32, h: 32, v: -70, min: 1950, max: 2110, alive: true },
+        { x: 2380, y: 320, w: 32, h: 32, v: 70, min: 2230, max: 2550, alive: true },
+        { x: 2760, y: 320, w: 32, h: 32, v: -74, min: 2700, max: 2920, alive: true }
+      ];
+
+      const enemyBase = enemies.map(e => ({ ...e }));
+
+      const gate = { x: 2925, y: 202, w: 28, h: 150 };
+      const checkpointPole = { x: 1570, y: 235 };
+
+      function rect(a, b) {
+        return (
+          a.x < b.x + b.w &&
+          a.x + a.w > b.x &&
+          a.y < b.y + b.h &&
+          a.y + a.h > b.y
+        );
+      }
+
+      function keysGot() {
+        return keys.filter(k => k.taken).length;
+      }
+
+      function coinsGot() {
+        return coins.filter(c => c.taken).length;
+      }
+
+      function powerLabel() {
+        if (player.power === "big") return "버섯";
+        if (player.power === "fire") return "불꽃";
+        return "기본";
+      }
+
+      function updateHUD() {
+        scoreEl.textContent = String(score).padStart(4, "0");
+        coinEl.textContent = `${coinsGot()}/12`;
+        keyEl.textContent = `${keysGot()}/3`;
+        lifeEl.textContent = String(Math.max(0, lives));
+        timeEl.textContent = String(Math.max(0, Math.ceil(timeLeft)));
+        powerEl.textContent = powerLabel();
+      }
+
+      function spark(x, y, color, count = 10) {
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x,
+            y,
+            vx: (Math.random() - 0.5) * 140,
+            vy: -40 - Math.random() * 140,
+            life: 0.6 + Math.random() * 0.4,
+            color
+          });
+        }
+      }
+
+      function resetPlayer() {
+        player.x = player.respawnX;
+        player.y = player.respawnY;
+        player.vx = 0;
+        player.vy = 0;
+        player.inv = 1.4;
+        player.fireCooldown = 0;
+        cameraX = Math.max(0, player.x - 250);
+      }
+
+      function restart() {
+        score = 0;
+        lives = 3;
+        timeLeft = 95;
+        paused = false;
+        gameOver = false;
+        clear = false;
+        checkpoint = false;
+        cameraX = 0;
+        particles = [];
+        fireballs = [];
+
+        player.respawnX = 70;
+        player.respawnY = 280;
+        player.power = "normal";
+
+        coins.forEach(c => c.taken = false);
+        keys.forEach(k => k.taken = false);
+        mushrooms.forEach(m => m.taken = false);
+        flowers.forEach(f => f.taken = false);
+
+        enemies.forEach((e, i) => Object.assign(e, enemyBase[i]));
+        movers[0].x = 535;
+        movers[1].x = 1518;
+        movers[2].x = 2610;
+
+        resetPlayer();
+        pauseBtn.textContent = "⏸ 일시정지";
+        msgEl.textContent = "🔑 열쇠 3개를 모으고 금고 게이트까지 이동하세요.";
+        updateHUD();
+        canvas.focus();
+      }
+
+      function losePowerOrLife(reason) {
+        if (player.inv > 0 || gameOver || clear) return;
+
+        if (player.power === "fire") {
+          player.power = "big";
+          player.inv = 1.5;
+          player.vx = -80 * player.face;
+          msgEl.textContent = "🔥 불꽃 능력이 해제되었습니다!";
+          updateHUD();
+          return;
+        }
+
+        if (player.power === "big") {
+          player.power = "normal";
+          player.inv = 1.5;
+          player.vx = -80 * player.face;
+          msgEl.textContent = "🍄 강화 상태가 해제되었습니다!";
+          updateHUD();
+          return;
+        }
+
+        lives--;
+        updateHUD();
+
+        if (lives <= 0) {
+          gameOver = true;
+          msgEl.textContent = `💥 GAME OVER · ${reason}`;
+          return;
+        }
+
+        msgEl.textContent = `💥 ${reason} 체크포인트에서 다시 시작합니다.`;
+        resetPlayer();
+      }
+
+      function shootFireball() {
+        if (player.power !== "fire") {
+          msgEl.textContent = "🔥 불꽃 아이템을 먼저 획득해야 합니다.";
+          return;
+        }
+
+        if (paused || gameOver || clear) return;
+        if (player.fireCooldown > 0) return;
+
+        player.fireCooldown = 0.32;
+
+        fireballs.push({
+          x: player.x + player.w / 2,
+          y: player.y + 22,
+          vx: player.face * 360,
+          vy: -40,
+          r: 7,
+          life: 2.0,
+          dead: false
+        });
+
+        spark(player.x + 18, player.y + 20, "#ff943a", 8);
+      }
+
+      function updateMover(m, dt) {
+        const before = m.x;
+        m.x += m.v * dt;
+
+        if (m.x < m.min) {
+          m.x = m.min;
+          m.v = Math.abs(m.v);
+        }
+
+        if (m.x > m.max) {
+          m.x = m.max;
+          m.v = -Math.abs(m.v);
+        }
+
+        m.dx = m.x - before;
+      }
+
+      function update(dt) {
+        if (paused || gameOver || clear) return;
+
+        timeLeft -= dt;
+        if (timeLeft <= 0) {
+          timeLeft = 0;
+          gameOver = true;
+          updateHUD();
+          msgEl.textContent = "⏱ TIME OVER · 제한시간을 초과했습니다.";
+          return;
+        }
+
+        if (player.inv > 0) player.inv -= dt;
+        if (player.fireCooldown > 0) player.fireCooldown -= dt;
+
+        movers.forEach(m => updateMover(m, dt));
+
+        enemies.forEach(e => {
+          if (!e.alive) return;
+          e.x += e.v * dt;
+          if (e.x < e.min) {
+            e.x = e.min;
+            e.v = Math.abs(e.v);
+          }
+          if (e.x > e.max) {
+            e.x = e.max;
+            e.v = -Math.abs(e.v);
+          }
+        });
+
+        if (input.left) {
+          player.vx = -player.speed;
+          player.face = -1;
+        } else if (input.right) {
+          player.vx = player.speed;
+          player.face = 1;
+        } else {
+          player.vx = 0;
+        }
+
+        if (input.jump && player.onGround) {
+          player.vy = -player.jump;
+          player.onGround = false;
+          spark(player.x + 17, player.y + 45, "#ffffff", 4);
+        }
+
+        input.jump = false;
+
+        player.vy += GRAVITY * dt;
+        const prevY = player.y;
+
+        player.x += player.vx * dt;
+        player.x = Math.max(0, Math.min(WORLD - player.w, player.x));
+        player.y += player.vy * dt;
+        player.onGround = false;
+
+        const allPlatforms = [...grounds, ...platforms, ...movers];
+
+        for (const p of allPlatforms) {
+          if (player.x + player.w > p.x && player.x < p.x + p.w) {
+            const prevBottom = prevY + player.h;
+            const nowBottom = player.y + player.h;
+
+            if (player.vy >= 0 && prevBottom <= p.y + 6 && nowBottom >= p.y) {
+              player.y = p.y - player.h;
+              player.vy = 0;
+              player.onGround = true;
+
+              if ("dx" in p) {
+                player.x += p.dx;
+              }
+            }
+          }
+        }
+
+        if (player.y > H + 60) {
+          losePowerOrLife("낭떠러지에 떨어졌습니다.");
+          return;
+        }
+
+        for (const s of spikes) {
+          if (rect(player, s)) {
+            losePowerOrLife("가시에 닿았습니다.");
+            return;
+          }
+        }
+
+        for (const c of coins) {
+          if (!c.taken && rect(player, { x: c.x - 11, y: c.y - 11, w: 22, h: 22 })) {
+            c.taken = true;
+            score += 100;
+            spark(c.x, c.y, "#ffd84f", 10);
+            msgEl.textContent = "🪙 MG코인 획득! +100점";
+            updateHUD();
+          }
+        }
+
+        for (const k of keys) {
+          if (!k.taken && rect(player, { x: k.x - 14, y: k.y - 14, w: 28, h: 28 })) {
+            k.taken = true;
+            score += 500;
+            spark(k.x, k.y, "#44c982", 14);
+            msgEl.textContent = `🔑 MG 열쇠 획득! ${keysGot()}/3`;
+            updateHUD();
+          }
+        }
+
+        for (const m of mushrooms) {
+          if (!m.taken && rect(player, { x: m.x - 14, y: m.y - 14, w: 28, h: 28 })) {
+            m.taken = true;
+
+            if (player.power === "normal") {
+              player.power = "big";
+              score += 300;
+              msgEl.textContent = "🍄 버섯 획득! 강화 상태가 되었습니다.";
+            } else {
+              score += 150;
+              msgEl.textContent = "🍄 버섯 획득! 보너스 점수 +150";
+            }
+
+            spark(m.x, m.y, "#ff5a5a", 12);
+            updateHUD();
+          }
+        }
+
+        for (const f of flowers) {
+          if (!f.taken && rect(player, { x: f.x - 14, y: f.y - 14, w: 28, h: 28 })) {
+            f.taken = true;
+            player.power = "fire";
+            score += 500;
+            spark(f.x, f.y, "#ff9738", 16);
+            msgEl.textContent = "🔥 불꽃 아이템 획득! 이제 불꽃을 발사할 수 있습니다.";
+            updateHUD();
+          }
+        }
+
+        for (const e of enemies) {
+          if (!e.alive) continue;
+
+          if (rect(player, e)) {
+            const stomp = player.vy > 100 && (player.y + player.h - e.y) < 19;
+
+            if (stomp) {
+              e.alive = false;
+              player.vy = -340;
+              score += 250;
+              spark(e.x + 16, e.y + 10, "#ff7c7c", 12);
+              msgEl.textContent = "✨ 적을 밟아 처치! +250점";
+              updateHUD();
+            } else {
+              losePowerOrLife("적과 충돌했습니다.");
+              return;
+            }
+          }
+        }
+
+        if (!checkpoint && player.x > checkpointPole.x) {
+          checkpoint = true;
+          player.respawnX = 1540;
+          player.respawnY = 280;
+          score += 300;
+          spark(checkpointPole.x, 255, "#5bd48c", 18);
+          msgEl.textContent = "✅ CHECKPOINT! 이제 여기서 다시 시작합니다.";
+          updateHUD();
+        }
+
+        if (input.fire) {
+          shootFireball();
+        }
+        input.fire = false;
+
+        fireballs.forEach(fb => {
+          fb.x += fb.vx * dt;
+          fb.y += fb.vy * dt;
+          fb.vy += 220 * dt;
+          fb.life -= dt;
+
+          const onGround = grounds.some(g =>
+            fb.x > g.x && fb.x < g.x + g.w && fb.y + fb.r >= g.y && fb.y + fb.r <= g.y + 12
+          );
+
+          if (onGround) {
+            fb.vy = -Math.abs(fb.vy) * 0.55;
+          }
+
+          for (const e of enemies) {
+            if (!e.alive || fb.dead) continue;
+
+            const hit =
+              fb.x + fb.r > e.x &&
+              fb.x - fb.r < e.x + e.w &&
+              fb.y + fb.r > e.y &&
+              fb.y - fb.r < e.y + e.h;
+
+            if (hit) {
+              e.alive = false;
+              fb.dead = true;
+              score += 300;
+              spark(e.x + 16, e.y + 10, "#ff943a", 14);
+              msgEl.textContent = "🔥 불꽃으로 적 처치! +300점";
+              updateHUD();
+            }
+          }
+
+          if (fb.life <= 0 || fb.x < 0 || fb.x > WORLD || fb.y > H + 60) {
+            fb.dead = true;
+          }
+        });
+
+        fireballs = fireballs.filter(fb => !fb.dead);
+
+        if (player.x + player.w > gate.x - 8) {
+          if (keysGot() === 3) {
+            clear = true;
+            score += 1500 + Math.ceil(timeLeft) * 10;
+            spark(gate.x, 250, "#ffd96a", 30);
+            msgEl.textContent = "🏆 STAGE CLEAR! 황금 금고 게이트가 열렸습니다!";
+            updateHUD();
+          } else {
+            player.x = gate.x - player.w - 10;
+            player.vx = 0;
+            msgEl.textContent = `🔒 금고가 잠겨 있습니다. 열쇠가 ${3 - keysGot()}개 더 필요합니다.`;
+          }
+        }
+
+        particles.forEach(p => {
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.vy += 240 * dt;
+          p.life -= dt;
+        });
+
+        particles = particles.filter(p => p.life > 0);
+
+        const target = player.x - W * 0.38;
+        cameraX += (target - cameraX) * Math.min(1, dt * 7);
+        cameraX = Math.max(0, Math.min(WORLD - W, cameraX));
+
+        updateHUD();
+      }
+
+      function r(x, y, w, h, color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(Math.round(x - cameraX), Math.round(y), Math.round(w), Math.round(h));
+      }
+
+      function drawBackground() {
+        const grad = ctx.createLinearGradient(0, 0, 0, H);
+        grad.addColorStop(0, "#79c7ff");
+        grad.addColorStop(0.55, "#bce8ff");
+        grad.addColorStop(1, "#e9f6ff");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.fillStyle = "rgba(255,232,156,.92)";
+        ctx.beginPath();
+        ctx.arc(690, 70, 34, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(255,255,255,.92)";
+        [[100, 72], [410, 105], [720, 130]].forEach(([x, y]) => {
+          const shift = (cameraX * 0.12) % 900;
+          let xx = x - shift;
+          if (xx < -100) xx += 900;
+          ctx.fillRect(xx, y, 72, 17);
+          ctx.fillRect(xx + 14, y - 12, 30, 17);
+          ctx.fillRect(xx + 42, y - 8, 25, 15);
+        });
+
+        ctx.fillStyle = "#93c8a4";
+        for (let x = -100; x < W + 200; x += 210) {
+          ctx.beginPath();
+          ctx.moveTo(x, 352);
+          ctx.lineTo(x + 100, 250);
+          ctx.lineTo(x + 200, 352);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = "#6faf83";
+        for (let x = -50; x < W + 220; x += 250) {
+          ctx.beginPath();
+          ctx.moveTo(x, 352);
+          ctx.lineTo(x + 120, 286);
+          ctx.lineTo(x + 240, 352);
+          ctx.fill();
+        }
+
+        for (let x = 50; x < W + 150; x += 210) {
+          ctx.fillStyle = "#557b62";
+          ctx.fillRect(x, 320, 8, 32);
+          ctx.fillStyle = "#65b779";
+          ctx.beginPath();
+          ctx.arc(x + 4, 310, 22, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      function drawPlatform(p, moving = false) {
+        r(p.x, p.y, p.w, p.h, moving ? "#5f83b3" : "#b76c48");
+        r(p.x, p.y, p.w, 6, moving ? "#a9c9ef" : "#f1b56e");
+
+        if (!moving) {
+          for (let x = p.x; x < p.x + p.w; x += 24) {
+            r(x, p.y + 8, 22, 9, "#9f5b3f");
+          }
+        }
+      }
+
+      function drawSpike(s) {
+        const sx = s.x - cameraX;
+        ctx.fillStyle = "#d5dde6";
+        for (let x = 0; x < s.w; x += 18) {
+          ctx.beginPath();
+          ctx.moveTo(sx + x, s.y + s.h);
+          ctx.lineTo(sx + x + 9, s.y);
+          ctx.lineTo(sx + x + 18, s.y + s.h);
+          ctx.fill();
+        }
+      }
+
+      function drawCoin(c) {
+        if (c.taken) return;
+        const x = c.x - cameraX;
+        const y = c.y;
+
+        ctx.fillStyle = "#ffe36d";
+        ctx.beginPath();
+        ctx.arc(x, y, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#e7a900";
+        ctx.beginPath();
+        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#fff7bf";
+        ctx.font = "bold 7px monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("MG", x, y + 2);
+      }
+
+      function drawKey(k) {
+        if (k.taken) return;
+        const x = k.x - cameraX;
+        const y = k.y;
+
+        ctx.fillStyle = "#3cc17f";
+        ctx.beginPath();
+        ctx.arc(x, y, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillRect(x + 8, y - 4, 18, 8);
+        ctx.fillRect(x + 20, y + 3, 5, 8);
+
+        ctx.fillStyle = "#dffbea";
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawMushroom(m) {
+        if (m.taken) return;
+        const x = m.x - cameraX;
+        const y = m.y;
+
+        ctx.fillStyle = "#ff5959";
+        ctx.beginPath();
+        ctx.arc(x, y, 14, Math.PI, 0);
+        ctx.fill();
+
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+        ctx.arc(x - 6, y - 5, 3, 0, Math.PI * 2);
+        ctx.arc(x + 6, y - 4, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#f7e7cf";
+        ctx.fillRect(x - 8, y, 16, 13);
+
+        ctx.fillStyle = "#333";
+        ctx.fillRect(x - 4, y + 4, 2, 3);
+        ctx.fillRect(x + 2, y + 4, 2, 3);
+      }
+
+      function drawFlower(f) {
+        if (f.taken) return;
+        const x = f.x - cameraX;
+        const y = f.y;
+
+        ctx.fillStyle = "#39b96d";
+        ctx.fillRect(x - 2, y + 6, 4, 16);
+
+        ctx.fillStyle = "#ff8f36";
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI * 2 / 6) * i;
+          ctx.beginPath();
+          ctx.arc(x + Math.cos(angle) * 10, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = "#ffe36d";
+        ctx.beginPath();
+        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawEnemy(e) {
+        if (!e.alive) return;
+        const x = e.x - cameraX;
+        const y = e.y;
+
+        ctx.fillStyle = "#f26e6e";
+        ctx.beginPath();
+        ctx.arc(x + 16, y + 15, 15, Math.PI, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillRect(x + 1, y + 15, 30, 16);
+
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(x + 6, y + 13, 7, 7);
+        ctx.fillRect(x + 19, y + 13, 7, 7);
+
+        ctx.fillStyle = "#222";
+        ctx.fillRect(x + 9, y + 15, 2, 3);
+        ctx.fillRect(x + 22, y + 15, 2, 3);
+
+        ctx.fillStyle = "#934848";
+        ctx.fillRect(x + 4, y + 30, 9, 4);
+        ctx.fillRect(x + 19, y + 30, 9, 4);
+      }
+
+      function drawCheckpoint() {
+        const x = checkpointPole.x - cameraX;
+        r(checkpointPole.x, 235, 5, 117, "#6c4b36");
+
+        ctx.fillStyle = checkpoint ? "#45c983" : "#d1d6dd";
+        ctx.fillRect(x + 5, 240, 55, 27);
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 9px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(checkpoint ? "SAVE!" : "CHECK", x + 32, 257);
+      }
+
+      function drawGate() {
+        const x = gate.x - cameraX;
+        ctx.fillStyle = "#805d3d";
+        ctx.fillRect(x - 8, 198, 42, 154);
+
+        ctx.fillStyle = keysGot() === 3 ? "#e8be4d" : "#5d6673";
+        ctx.fillRect(x, 208, 26, 144);
+
+        ctx.fillStyle = keysGot() === 3 ? "#fff0a5" : "#b8bec7";
+        ctx.fillRect(x + 6, 225, 14, 110);
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 8px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(keysGot() === 3 ? "OPEN" : "LOCK", x + 13, 274);
+      }
+
+      function drawFireballs() {
+        fireballs.forEach(fb => {
+          const x = fb.x - cameraX;
+          const y = fb.y;
+
+          ctx.fillStyle = "#ff8e3c";
+          ctx.beginPath();
+          ctx.arc(x, y, fb.r, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = "#ffd36d";
+          ctx.beginPath();
+          ctx.arc(x, y, fb.r - 3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      function drawParticles() {
+        for (const p of particles) {
+          ctx.globalAlpha = Math.max(0, p.life);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x - cameraX, p.y, 4, 4);
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function drawPlayer() {
+        const x = player.x - cameraX;
+        const y = player.y;
+
+        if (player.inv > 0 && Math.floor(player.inv * 10) % 2 === 0) return;
+
+        ctx.fillStyle = "rgba(0,0,0,.15)";
+        ctx.beginPath();
+        ctx.ellipse(x + 17, y + 48, 16, 4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        let bodyColor = "#2b78c8";
+        let trimColor = "#176ab6";
+
+        if (player.power === "big") {
+          bodyColor = "#30a46c";
+          trimColor = "#248153";
+        }
+
+        if (player.power === "fire") {
+          bodyColor = "#ff8e3c";
+          trimColor = "#d96b17";
+        }
+
+        ctx.fillStyle = bodyColor;
+        ctx.beginPath();
+        ctx.roundRect(x + 3, y + 3, 28, 37, 9);
+        ctx.fill();
+
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+        ctx.roundRect(x + 6, y + 7, 22, 23, 7);
+        ctx.fill();
+
+        ctx.fillStyle = "#f2bc56";
+        ctx.fillRect(x + 5, y, 6, 8);
+        ctx.fillRect(x + 23, y, 6, 8);
+
+        ctx.fillStyle = "#252525";
+        ctx.fillRect(x + 10, y + 15, 3, 4);
+        ctx.fillRect(x + 21, y + 15, 3, 4);
+
+        ctx.fillStyle = "#f2a9ad";
+        ctx.fillRect(x + 7, y + 21, 4, 3);
+        ctx.fillRect(x + 23, y + 21, 4, 3);
+
+        ctx.strokeStyle = "#333";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(x + 17, y + 20, 5, 0.2, Math.PI - 0.2);
+        ctx.stroke();
+
+        ctx.fillStyle = trimColor;
+        ctx.fillRect(x + 7, y + 34, 20, 11);
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 7px monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("MG", x + 17, y + 42);
+
+        if (player.power === "fire") {
+          ctx.fillStyle = "#ffd36d";
+          ctx.beginPath();
+          ctx.arc(x + 30, y + 10, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 9px sans-serif";
+        ctx.fillText("김금고", x + 17, y - 7);
+      }
+
+      function drawOverlay() {
+        if (!paused && !gameOver && !clear) return;
+
+        ctx.fillStyle = "rgba(16,24,40,.55)";
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.fillStyle = "#fff";
+        ctx.textAlign = "center";
+        ctx.font = "bold 34px monospace";
+        ctx.fillText(
+          paused ? "PAUSE" : clear ? "STAGE CLEAR!" : "GAME OVER",
+          W / 2,
+          H / 2 - 8
+        );
+
+        ctx.font = "bold 15px sans-serif";
+        ctx.fillText(
+          clear
+            ? "김금고의 금고 탈출 성공! ✨"
+            : gameOver
+            ? "처음부터 다시 도전하세요."
+            : "잠시 쉬어가세요.",
+          W / 2,
+          H / 2 + 25
+        );
+      }
+
+      function render() {
+        drawBackground();
+        grounds.forEach(p => drawPlatform(p));
+        platforms.forEach(p => drawPlatform(p));
+        movers.forEach(p => drawPlatform(p, true));
+        spikes.forEach(drawSpike);
+        coins.forEach(drawCoin);
+        keys.forEach(drawKey);
+        mushrooms.forEach(drawMushroom);
+        flowers.forEach(drawFlower);
+        enemies.forEach(drawEnemy);
+        drawCheckpoint();
+        drawGate();
+        drawFireballs();
+        drawParticles();
+        drawPlayer();
+        drawOverlay();
+      }
+
+      function loop(t) {
+        const dt = Math.min(0.033, ((t - last) / 1000) || 0);
+        last = t;
+        update(dt);
+        render();
+        requestAnimationFrame(loop);
+      }
+
+      function activeKey() {
+        const a = document.activeElement;
+        return a === canvas || document.body.contains(a);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (!activeKey()) return;
+
+        if (["ArrowLeft","ArrowRight","ArrowUp"," ","a","A","d","D","w","W","f","F","x","X"].includes(e.key)) {
+          e.preventDefault();
+        }
+
+        if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") input.left = true;
+        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") input.right = true;
+        if (e.key === "ArrowUp" || e.key === "w" || e.key === "W" || e.key === " ") input.jump = true;
+        if (e.key === "f" || e.key === "F" || e.key === "x" || e.key === "X") input.fire = true;
+      });
+
+      document.addEventListener("keyup", (e) => {
+        if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") input.left = false;
+        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") input.right = false;
+      });
+
+      function hold(buttonId, key) {
+        const el = document.getElementById(buttonId);
+        const on = () => {
+          input[key] = true;
+          canvas.focus();
+        };
+        const off = () => {
+          if (key !== "jump" && key !== "fire") input[key] = false;
+        };
+
+        el.addEventListener("pointerdown", on);
+        el.addEventListener("pointerup", off);
+        el.addEventListener("pointercancel", off);
+        el.addEventListener("pointerleave", off);
+      }
+
+      hold("left", "left");
+      hold("right", "right");
+
+      document.getElementById("jump").addEventListener("click", () => {
+        input.jump = true;
+        canvas.focus();
+      });
+
+      fireBtn.addEventListener("click", () => {
+        input.fire = true;
+        canvas.focus();
+      });
+
+      restartBtn.addEventListener("click", restart);
+
+      pauseBtn.addEventListener("click", () => {
+        if (gameOver || clear) return;
+        paused = !paused;
+        pauseBtn.textContent = paused ? "▶ 계속하기" : "⏸ 일시정지";
+        msgEl.textContent = paused
+          ? "⏸ 게임이 일시정지되었습니다."
+          : "▶ 게임을 계속합니다!";
+        canvas.focus();
+      });
+
+      restart();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>
