@@ -1,1246 +1,3174 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-  <title>김금고의 MG 금고 탈출 작전</title>
-
-  <style>
-    :root {
-      --bg: #f4f7fb;
-      --card: #ffffff;
-      --panel: #eef4fb;
-      --text: #1a2230;
-      --muted: #66758a;
-      --border: #d7e1ec;
-      --accent: #1668c7;
-      --accent-soft: #e8f2ff;
-      --green: #34a96a;
-      --shadow: 0 10px 28px rgba(20, 44, 84, 0.08);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 24px;
-      background: var(--bg);
-      color: var(--text);
-      font-family:
-        "Pretendard",
-        "Noto Sans KR",
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-    }
-
-    .app {
-      max-width: 1080px;
-      margin: 0 auto;
-    }
-
-    .shell {
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      overflow: hidden;
-      background: var(--card);
-      box-shadow: var(--shadow);
-    }
-
-    .top {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 16px 18px;
-      background:
-        linear-gradient(135deg, var(--panel), var(--card));
-      border-bottom: 1px solid var(--border);
-    }
-
-    .title {
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-    }
-
-    .subtitle {
-      margin-top: 4px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .hud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .hud span {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 10px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: var(--card);
-      font-size: 12px;
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .canvas-wrap {
-      padding: 12px;
-      background: var(--panel);
-    }
-
-    canvas {
-      display: block;
-      width: 100%;
-      height: auto;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: #8fd3ff;
-      image-rendering: pixelated;
-      outline: none;
-    }
-
-    canvas:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(22, 104, 199, 0.12);
-    }
-
-    .mission {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px 16px;
-      border-top: 1px solid var(--border);
-      background: var(--card);
-    }
-
-    .mission-main {
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .mission-sub {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 8px;
-      padding: 12px 16px;
-    }
-
-    button {
-      min-height: 44px;
-      padding: 8px 10px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--card);
-      color: var(--text);
-      font-weight: 850;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-
-    button.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
-    }
-
-    button.fire {
-      background: #ff8e3c;
-      border-color: #ff8e3c;
-      color: white;
-    }
-
-    .guide {
-      padding: 0 16px 16px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 3px 7px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      font-size: 11px;
-      font-weight: 800;
-      margin-right: 4px;
-      color: var(--accent);
-    }
-
-    @media (max-width: 760px) {
-      body { padding: 12px; }
-      .controls {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-      .full-row {
-        grid-column: 1 / -1;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>김금고의 MG 금고 탈출 작전 - 쿠퍼왕</title>
+<style>
+:root{
+  --mg-blue:#0b5eb8;
+  --mg-blue-dark:#073f80;
+  --mg-light:#eef6ff;
+  --card:#ffffff;
+  --text:#172235;
+  --muted:#66758b;
+  --border:#d9e2ed;
+  --shadow:0 16px 40px rgba(19,47,82,.12);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  padding:22px;
+  background:#f3f7fb;
+  color:var(--text);
+  font-family:"Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+button{font:inherit;cursor:pointer}
+.game-app{max-width:1080px;margin:0 auto}
+.shell{
+  overflow:hidden;
+  border:1px solid var(--border);
+  border-radius:22px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+.top{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  padding:16px 18px;
+  background:linear-gradient(135deg,#f7fbff,#fff);
+  border-bottom:1px solid var(--border);
+}
+.title{font-size:20px;font-weight:900;letter-spacing:-.03em}
+.subtitle{margin-top:4px;color:var(--muted);font-size:12px}
+.hud{display:flex;flex-wrap:wrap;gap:7px}
+.hud span{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:7px 10px;
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:#fff;
+  font-size:12px;
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+}
+#bossHud{
+  display:none;
+  border-color:#f0c96b;
+  background:#fff8db;
+}
+.canvas-wrap{padding:12px;background:#eaf1f8}
+canvas{
+  display:block;
+  width:100%;
+  height:auto;
+  background:#8fd3ff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  outline:none;
+  image-rendering:pixelated;
+}
+canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13)}
+.mission{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:12px 16px;
+  border-top:1px solid var(--border);
+}
+.mission-main{font-size:13px;font-weight:850}
+.mission-sub{font-size:12px;color:var(--muted)}
+.controls{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:8px;
+  padding:12px 16px;
+}
+.controls button{
+  min-height:44px;
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#fff;
+  color:var(--text);
+  font-weight:850;
+  touch-action:manipulation;
+}
+.controls .primary{background:var(--mg-blue);border-color:var(--mg-blue);color:#fff}
+.controls .fire{background:#ee7a28;border-color:#ee7a28;color:#fff}
+.guide{
+  padding:0 16px 16px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.65;
+}
+.tag{
+  display:inline-block;
+  margin-right:5px;
+  padding:3px 7px;
+  border-radius:999px;
+  background:var(--mg-light);
+  color:var(--mg-blue-dark);
+  font-size:11px;
+  font-weight:800;
+}
+@media(max-width:700px){
+  body{padding:10px}
+  .controls{grid-template-columns:repeat(3,1fr)}
+  .restart{grid-column:1/-1}
+}
+</style>
 </head>
 <body>
-  <div class="app">
-    <div class="shell">
-      <div class="top">
-        <div>
-          <div class="title">🌟 김금고의 MG 금고 탈출 작전</div>
-          <div class="subtitle">
-            열쇠 3개를 모으고 버섯·불꽃 아이템을 활용해 황금 금고 게이트를 여세요.
-          </div>
-        </div>
-
-        <div class="hud" aria-live="polite">
-          <span>⭐ <b id="score">0000</b></span>
-          <span>🪙 <b id="coin">0/12</b></span>
-          <span>🔑 <b id="key">0/3</b></span>
-          <span>❤️ <b id="life">3</b></span>
-          <span>⏱ <b id="time">95</b></span>
-          <span>⚡ <b id="power">기본</b></span>
-        </div>
+<div class="game-app">
+  <div class="shell">
+    <div class="top">
+      <div>
+        <div class="title">🌟 김금고의 MG 금고 탈출 작전</div>
+        <div class="subtitle">긴 MG 모험길을 지나 4명의 중간보스를 차례로 격파하고 마지막 쿠퍼왕의 황금 금고에 도전하세요.</div>
       </div>
-
-      <div class="canvas-wrap">
-        <canvas
-          id="game"
-          width="800"
-          height="420"
-          tabindex="0"
-          aria-label="김금고 횡스크롤 플랫폼 게임"
-        ></canvas>
-      </div>
-
-      <div class="mission">
-        <div>
-          <div id="msg" class="mission-main" aria-live="polite">
-            🔑 열쇠 3개를 모으고 금고 게이트까지 이동하세요.
-          </div>
-          <div class="mission-sub">
-            버섯은 강화, 불꽃은 원거리 공격 능력을 제공합니다.
-          </div>
-        </div>
-        <div class="mission-sub">
-          <span class="tag">CHECKPOINT</span>
-          중간 저장 지점 있음
-        </div>
-      </div>
-
-      <div class="controls">
-        <button type="button" id="left">◀ 왼쪽</button>
-        <button type="button" id="right">오른쪽 ▶</button>
-        <button type="button" id="jump" class="primary">⬆ 점프</button>
-        <button type="button" id="fire" class="fire">🔥 불꽃</button>
-        <button type="button" id="pause">⏸ 일시정지</button>
-        <button type="button" id="restart" class="full-row">↻ 처음부터</button>
-      </div>
-
-      <div class="guide">
-        키보드:
-        <b>← → / A D</b> 이동 ·
-        <b>↑ / W / Space</b> 점프 ·
-        <b>F / X</b> 불꽃 발사
-        <br />
-        <span class="tag">TIP</span>
-        버섯을 먹으면 한 번 더 버틸 수 있고,
-        불꽃을 먹으면 적을 멀리서 처치할 수 있습니다.
+      <div class="hud" aria-live="polite">
+        <span>⭐ <b id="score">0000</b></span>
+        <span>🪙 <b id="coin">0/22</b></span>
+        <span>🔑 <b id="key">0/3</b></span>
+        <span>❤️ <b id="life">2</b></span>
+        <span>⏱ <b id="time">180</b></span>
+        <span>⚡ <b id="power">기본</b></span>
+        <span>⚔️ 중간보스 <b id="bossProgress">0/4</b></span>
+        <span id="midBossHud" style="display:none;border-color:#9ec7a8;background:#effaf1;"><span id="midBossName">🪃 거북대장</span> <b id="midBossHp">6/6</b></span>
+        <span id="bossHud">👑 쿠퍼왕 <b id="bossHp">18/18</b></span>
       </div>
     </div>
+
+    <div class="canvas-wrap">
+      <canvas id="game" width="800" height="420" tabindex="0" aria-label="김금고 횡스크롤 플랫폼 게임"></canvas>
+    </div>
+
+    <div class="mission">
+      <div>
+        <div id="msg" class="mission-main" aria-live="polite">🔑 MG 열쇠 3개를 모아 마지막 금고까지 이동하세요.</div>
+        <div class="mission-sub">버섯은 방어 강화 · 불꽃 아이템은 원거리 공격 능력을 제공합니다.</div>
+      </div>
+      <div class="mission-sub"><span class="tag">BOSS RUSH</span>거북대장 → 멧돼지대장 → 박쥐대장 → 게대장 → 쿠퍼왕</div>
+    </div>
+
+    <div class="controls">
+      <button type="button" id="left">◀ 왼쪽</button>
+      <button type="button" id="right">오른쪽 ▶</button>
+      <button type="button" id="jump" class="primary">⬆ 점프</button>
+      <button type="button" id="fire" class="fire">🔥 불꽃</button>
+      <button type="button" id="pause">⏸ 일시정지</button>
+      <button type="button" id="restart" class="restart">↻ 처음부터</button>
+    </div>
+
+    <div class="guide">
+      키보드: <b>← → / A D</b> 이동 · <b>↑ / W / Space</b> 점프(공중에서 한 번 더 누르면 2단 점프) · <b>F / X</b> 불꽃 발사<br>
+      <span class="tag">BOSS TIP</span>멧돼지대장은 연속 돌진·착지 충격파를 사용하고, 쿠퍼왕은 18HP 3페이즈에서 운석·추적탄·화염 기둥까지 사용합니다.
+    </div>
   </div>
+</div>
 
-  <script>
-    (() => {
-      const canvas = document.getElementById("game");
-      const ctx = canvas.getContext("2d");
+<script>
+(() => {
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
 
-      const scoreEl = document.getElementById("score");
-      const coinEl = document.getElementById("coin");
-      const keyEl = document.getElementById("key");
-      const lifeEl = document.getElementById("life");
-      const timeEl = document.getElementById("time");
-      const powerEl = document.getElementById("power");
-      const msgEl = document.getElementById("msg");
+  const scoreEl = document.getElementById("score");
+  const coinEl = document.getElementById("coin");
+  const keyEl = document.getElementById("key");
+  const lifeEl = document.getElementById("life");
+  const timeEl = document.getElementById("time");
+  const powerEl = document.getElementById("power");
+  const bossProgressEl = document.getElementById("bossProgress");
+  const midBossHud = document.getElementById("midBossHud");
+  const midBossNameEl = document.getElementById("midBossName");
+  const midBossHpEl = document.getElementById("midBossHp");
+  const bossHud = document.getElementById("bossHud");
+  const bossHpEl = document.getElementById("bossHp");
+  const msgEl = document.getElementById("msg");
 
-      const pauseBtn = document.getElementById("pause");
-      const restartBtn = document.getElementById("restart");
-      const fireBtn = document.getElementById("fire");
+  const pauseBtn = document.getElementById("pause");
 
-      const W = 800;
-      const H = 420;
-      const WORLD = 3000;
-      const GRAVITY = 1500;
+  const W = 800;
+  const H = 420;
+  const WORLD = 6200;
+  const GRAVITY = 1500;
 
-      let score = 0;
-      let lives = 3;
-      let timeLeft = 95;
-      let paused = false;
-      let gameOver = false;
-      let clear = false;
-      let checkpoint = false;
-      let cameraX = 0;
-      let last = 0;
+  let score = 0;
+  let lives = 2;
+  let timeLeft = 180;
+  let paused = false;
+  let gameOver = false;
+  let clear = false;
+  let checkpoint = false;
+  let cameraX = 0;
+  let last = 0;
+  let particles = [];
+  let fireballs = [];
+  let boomerangs = [];
+  let windOrbs = [];
+  let crabBalls = [];
+  let boarShockwaves = [];
+  let bossFireballs = [];
+  let bossMeteors = [];
+  let flamePillars = [];
+  let homingOrbs = [];
 
-      const input = {
-        left: false,
-        right: false,
-        jump: false,
-        fire: false
-      };
+  const input = {left:false,right:false,jump:false,fire:false};
 
-      const player = {
-        x: 70,
-        y: 280,
-        w: 34,
-        h: 48,
-        vx: 0,
-        vy: 0,
-        speed: 235,
-        jump: 570,
-        onGround: false,
-        inv: 0,
-        respawnX: 70,
-        respawnY: 280,
-        power: "normal", // normal / big / fire
-        fireCooldown: 0,
-        face: 1
-      };
+  const player = {
+    x:70,y:280,w:34,h:48,
+    vx:0,vy:0,speed:235,jump:570,
+    onGround:false,inv:0,
+    respawnX:70,respawnY:280,
+    power:"normal", // normal / big / fire / raccoon / raccoonFire
+    fireCooldown:0,
+    face:1,
+    jumpCount:0,
+    maxJumps:2,
+    gliding:false
+  };
 
-      let particles = [];
-      let fireballs = [];
+  const grounds = [
+    {x:0,y:352,w:520,h:80},
+    {x:610,y:352,w:430,h:80},
+    {x:1140,y:352,w:370,h:80},
+    {x:1610,y:352,w:520,h:80},
+    {x:2220,y:352,w:380,h:80},
+    {x:2700,y:352,w:480,h:80},
 
-      const grounds = [
-        { x: 0, y: 352, w: 520, h: 80 },
-        { x: 610, y: 352, w: 430, h: 80 },
-        { x: 1140, y: 352, w: 370, h: 80 },
-        { x: 1610, y: 352, w: 520, h: 80 },
-        { x: 2220, y: 352, w: 380, h: 80 },
-        { x: 2700, y: 352, w: 300, h: 80 }
-      ];
+    /* 확장 구간 */
+    {x:3290,y:352,w:410,h:80},
+    {x:3805,y:352,w:695,h:80},
+    {x:4605,y:352,w:705,h:80},
+    {x:5420,y:352,w:780,h:80}
+  ];
 
-      const platforms = [
-        { x: 210, y: 292, w: 120, h: 18 },
-        { x: 390, y: 245, w: 100, h: 18 },
-        { x: 650, y: 285, w: 100, h: 18 },
-        { x: 800, y: 220, w: 110, h: 18 },
-        { x: 970, y: 270, w: 90, h: 18 },
-        { x: 1190, y: 265, w: 100, h: 18 },
-        { x: 1360, y: 210, w: 105, h: 18 },
-        { x: 1660, y: 270, w: 100, h: 18 },
-        { x: 1810, y: 215, w: 110, h: 18 },
-        { x: 2020, y: 275, w: 95, h: 18 },
-        { x: 2280, y: 260, w: 100, h: 18 },
-        { x: 2440, y: 205, w: 110, h: 18 },
-        { x: 2730, y: 275, w: 90, h: 18 }
-      ];
+  const platforms = [
+    {x:210,y:292,w:120,h:18},{x:390,y:245,w:100,h:18},
+    {x:650,y:285,w:100,h:18},{x:800,y:220,w:110,h:18},
+    {x:970,y:270,w:90,h:18},{x:1190,y:265,w:100,h:18},
+    {x:1360,y:210,w:105,h:18},{x:1660,y:270,w:100,h:18},
+    {x:1810,y:215,w:110,h:18},{x:2020,y:275,w:95,h:18},
+    {x:2280,y:260,w:100,h:18},{x:2440,y:205,w:110,h:18},
+    {x:2730,y:275,w:90,h:18},{x:3010,y:225,w:110,h:18},
 
-      const movers = [
-        { x: 535, y: 270, w: 70, h: 16, min: 525, max: 600, v: 55, dx: 0 },
-        { x: 1518, y: 250, w: 85, h: 16, min: 1515, max: 1605, v: 65, dx: 0 },
-        { x: 2610, y: 245, w: 85, h: 16, min: 2605, max: 2690, v: 72, dx: 0 }
-      ];
+    /* 멧돼지대장으로 가는 길 */
+    {x:3340,y:275,w:105,h:18},{x:3500,y:220,w:105,h:18},
+    {x:3650,y:270,w:70,h:18},
 
-      const spikes = [
-        { x: 710, y: 332, w: 54, h: 20 },
-        { x: 1265, y: 332, w: 48, h: 20 },
-        { x: 1880, y: 332, w: 56, h: 20 },
-        { x: 2320, y: 332, w: 52, h: 20 },
-        { x: 2800, y: 332, w: 45, h: 20 }
-      ];
+    /* 박쥐대장으로 가는 길 */
+    {x:3850,y:270,w:105,h:18},{x:4020,y:205,w:105,h:18},
+    {x:4210,y:255,w:105,h:18},{x:4390,y:215,w:90,h:18},
 
-      const coins = [
-        [260, 260], [435, 210], [680, 250], [855, 180],
-        [1005, 235], [1235, 230], [1410, 175], [1695, 235],
-        [1855, 180], [2055, 240], [2325, 225], [2495, 170]
-      ].map(([x, y]) => ({ x, y, taken: false }));
+    /* 게대장으로 가는 길 */
+    {x:4660,y:275,w:105,h:18},{x:4830,y:215,w:105,h:18},
+    {x:5010,y:265,w:105,h:18},{x:5200,y:210,w:90,h:18},
 
-      const keys = [
-        { x: 850, y: 170, taken: false },
-        { x: 1410, y: 160, taken: false },
-        { x: 2495, y: 158, taken: false }
-      ];
+    /* 쿠퍼왕으로 가는 최종 통로 */
+    {x:5480,y:270,w:105,h:18},{x:5660,y:210,w:105,h:18},
+    {x:5850,y:260,w:105,h:18}
+  ];
 
-      const mushrooms = [
-        { x: 460, y: 225, taken: false },
-        { x: 1825, y: 195, taken: false }
-      ];
+  const movers = [
+    {x:535,y:270,w:70,h:16,min:525,max:600,v:82,dx:0},
+    {x:1518,y:250,w:85,h:16,min:1515,max:1605,v:95,dx:0},
+    {x:2610,y:245,w:85,h:16,min:2605,max:2690,v:108,dx:0},
 
-      const flowers = [
-        { x: 2060, y: 240, taken: false }
-      ];
+    /* 확장된 낭떠러지 구간 */
+    {x:3190,y:250,w:88,h:16,min:3185,max:3280,v:115,dx:0},
+    {x:3710,y:235,w:88,h:16,min:3705,max:3795,v:125,dx:0},
+    {x:4510,y:245,w:88,h:16,min:4505,max:4595,v:132,dx:0},
+    {x:5320,y:225,w:88,h:16,min:5315,max:5410,v:140,dx:0}
+  ];
 
-      const enemies = [
-        { x: 335, y: 320, w: 32, h: 32, v: -55, min: 330, max: 500, alive: true },
-        { x: 890, y: 320, w: 32, h: 32, v: 62, min: 840, max: 1010, alive: true },
-        { x: 1290, y: 320, w: 32, h: 32, v: -66, min: 1160, max: 1460, alive: true },
-        { x: 1730, y: 320, w: 32, h: 32, v: 63, min: 1620, max: 1870, alive: true },
-        { x: 2080, y: 320, w: 32, h: 32, v: -70, min: 1950, max: 2110, alive: true },
-        { x: 2380, y: 320, w: 32, h: 32, v: 70, min: 2230, max: 2550, alive: true },
-        { x: 2760, y: 320, w: 32, h: 32, v: -74, min: 2700, max: 2920, alive: true }
-      ];
+  const moverBase = movers.map(m => ({...m}));
 
-      const enemyBase = enemies.map(e => ({ ...e }));
+  const spikes = [
+    {x:470,y:332,w:36,h:20},{x:710,y:332,w:54,h:20},
+    {x:970,y:332,w:40,h:20},{x:1265,y:332,w:48,h:20},
+    {x:1740,y:332,w:42,h:20},{x:1880,y:332,w:56,h:20},
+    {x:2320,y:332,w:52,h:20},{x:2510,y:332,w:42,h:20},
+    {x:3005,y:332,w:44,h:20},
 
-      const gate = { x: 2925, y: 202, w: 28, h: 150 };
-      const checkpointPole = { x: 1570, y: 235 };
+    /* 확장 구간 함정 */
+    {x:3310,y:332,w:38,h:20},{x:3650,y:332,w:38,h:20},
+    {x:3860,y:332,w:44,h:20},{x:4430,y:332,w:42,h:20},
+    {x:4630,y:332,w:42,h:20},{x:5250,y:332,w:42,h:20},
+    {x:5450,y:332,w:42,h:20},{x:5970,y:332,w:45,h:20}
+  ];
 
-      function rect(a, b) {
-        return (
-          a.x < b.x + b.w &&
-          a.x + a.w > b.x &&
-          a.y < b.y + b.h &&
-          a.y + a.h > b.y
+  const coins = [
+    [260,260],[435,210],[680,250],[855,180],[1005,235],
+    [1235,230],[1410,175],[1695,235],[1855,180],[2055,240],
+    [2325,225],[2495,170],
+
+    /* 확장 구간 코인 */
+    [3050,190],[3228,215],[3380,240],[3540,185],[3890,235],
+    [4060,170],[4250,220],[4700,240],[4870,180],[5520,235]
+  ].map(([x,y]) => ({x,y,taken:false}));
+
+  const keys = [
+    {x:850,y:170,taken:false},
+    {x:1410,y:160,taken:false},
+    {x:2495,y:158,taken:false}
+  ];
+
+  const mushrooms = [
+    {x:460,y:225,taken:false},
+    {x:1825,y:195,taken:false},
+    {x:3860,y:235,taken:false},
+    {x:5440,y:315,taken:false}
+  ];
+
+  const flowers = [
+    {x:2060,y:240,taken:false},
+    {x:2765,y:245,taken:false},
+    {x:4750,y:230,taken:false},
+    {x:5550,y:235,taken:false}
+  ];
+
+  /*
+    나뭇잎 파워업
+    획득 시 날으는 너구리 김금고로 변신
+  */
+  const leaves = [
+    {x:1015,y:220,taken:false},
+    {x:2325,y:205,taken:false},
+    {x:4080,y:170,taken:false},
+    {x:5180,y:175,taken:false}
+  ];
+
+  const enemies = [
+    {x:335,y:320,w:32,h:32,v:-78,min:330,max:500,alive:true},
+    {x:650,y:320,w:32,h:32,v:84,min:620,max:820,alive:true},
+    {x:890,y:320,w:32,h:32,v:92,min:840,max:1010,alive:true},
+    {x:1190,y:320,w:32,h:32,v:-88,min:1150,max:1320,alive:true},
+    {x:1390,y:320,w:32,h:32,v:96,min:1330,max:1470,alive:true},
+    {x:1730,y:320,w:32,h:32,v:94,min:1620,max:1870,alive:true},
+    {x:2080,y:320,w:32,h:32,v:-102,min:1950,max:2110,alive:true},
+    {x:2380,y:320,w:32,h:32,v:104,min:2230,max:2550,alive:true},
+    {x:2740,y:320,w:32,h:32,v:-108,min:2710,max:2795,alive:true},
+    {x:3070,y:320,w:32,h:32,v:112,min:2940,max:3150,alive:true},
+    {x:3825,y:320,w:32,h:32,v:118,min:3810,max:3970,alive:true},
+    {x:4470,y:320,w:32,h:32,v:-120,min:4350,max:4480,alive:true},
+    {x:4635,y:320,w:32,h:32,v:124,min:4620,max:4760,alive:true},
+    {x:5290,y:320,w:32,h:32,v:-128,min:5160,max:5295,alive:true},
+    {x:5450,y:320,w:32,h:32,v:132,min:5430,max:5580,alive:true}
+  ];
+
+  const enemyBase = enemies.map(e => ({...e}));
+
+  const checkpointPole = {x:1640,y:235};
+
+  /*
+    중간보스: 부메랑 거북대장
+    마지막 쿠퍼왕 전투 구간으로 넘어가기 전에 반드시 처치해야 함
+  */
+  const midBoss = {
+    x:2475,y:294,w:58,h:58,
+    hp:6,maxHp:6,
+    alive:true,active:false,
+    vx:-105,
+    minX:2350,maxX:2565,
+    throwCooldown:1.25,
+    flash:0,
+    facing:-1
+  };
+
+  const midBossBarrier = {
+    x:2585,y:212,w:24,h:140
+  };
+
+  /* 중간보스 2: 돌진 멧돼지대장 */
+  const boarBoss = {
+    x:3490,y:294,w:62,h:58,
+    hp:10,maxHp:10,
+    alive:true,active:false,
+    vx:-130,vy:0,onGround:true,
+    minX:3330,maxX:3650,
+    dashCooldown:1.6,
+    jumpCooldown:1.05,
+    slamCooldown:2.8,
+    comboDashes:0,
+    comboTimer:0,
+    flash:0,
+    facing:-1
+  };
+
+  const boarBarrier = {x:3670,y:212,w:24,h:140};
+
+  /* 중간보스 3: 바람 박쥐대장 */
+  const batBoss = {
+    x:4200,y:175,w:58,h:44,
+    hp:6,maxHp:6,
+    alive:true,active:false,
+    minX:3940,maxX:4420,
+    baseY:175,
+    t:0,
+    orbCooldown:1.0,
+    flash:0,
+    facing:-1
+  };
+
+  const batBarrier = {x:4480,y:212,w:24,h:140};
+
+  /* 중간보스 4: 대포 게대장 */
+  const crabBoss = {
+    x:5030,y:292,w:66,h:60,
+    hp:8,maxHp:8,
+    alive:true,active:false,
+    vx:-105,
+    minX:4750,maxX:5240,
+    cannonCooldown:1.15,
+    flash:0,
+    facing:-1
+  };
+
+  const crabBarrier = {x:5280,y:212,w:24,h:140};
+
+  /* 최종보스 */
+  const boss = {
+    x:5740,y:282,w:66,h:70,
+    hp:18,maxHp:18,
+    alive:true,active:false,
+    vx:-120,vy:0,onGround:true,
+    minX:5520,maxX:6020,
+    shootCooldown:0.70,flash:0,
+    burstCooldown:2.7,
+    jumpCooldown:1.25,
+    dashCooldown:2.2,
+    meteorCooldown:4.0,
+    pillarCooldown:5.2,
+    homingCooldown:3.4,
+    facing:-1
+  };
+
+  const gate = {x:6100,y:202,w:30,h:150};
+
+  function rect(a,b){
+    return a.x < b.x+b.w &&
+           a.x+a.w > b.x &&
+           a.y < b.y+b.h &&
+           a.y+a.h > b.y;
+  }
+
+  function keysGot(){ return keys.filter(k=>k.taken).length; }
+  function coinsGot(){ return coins.filter(c=>c.taken).length; }
+  function miniBossesDefeated(){
+    return [midBoss,boarBoss,batBoss,crabBoss].filter(b=>!b.alive).length;
+  }
+  function allMiniBossesDefeated(){ return miniBossesDefeated()===4; }
+
+  function powerLabel(){
+    if(player.power==="big") return "버섯";
+    if(player.power==="fire") return "불꽃";
+    if(player.power==="raccoon") return "날으는 너구리";
+    if(player.power==="raccoonFire") return "너구리+불꽃";
+    return "기본";
+  }
+
+  function hud(){
+    scoreEl.textContent = String(score).padStart(4,"0");
+    coinEl.textContent = `${coinsGot()}/${coins.length}`;
+    keyEl.textContent = `${keysGot()}/3`;
+    lifeEl.textContent = String(Math.max(0,lives));
+    timeEl.textContent = String(Math.max(0,Math.ceil(timeLeft)));
+    powerEl.textContent = powerLabel();
+    bossProgressEl.textContent = `${miniBossesDefeated()}/4`;
+
+    const activeMid =
+      [
+        {boss:midBoss,name:"🪃 거북대장"},
+        {boss:boarBoss,name:"🐗 멧돼지대장"},
+        {boss:batBoss,name:"🦇 박쥐대장"},
+        {boss:crabBoss,name:"🦀 게대장"}
+      ].find(item => item.boss.active && item.boss.alive);
+
+    if(activeMid && !boss.active){
+      midBossHud.style.display="inline-flex";
+      midBossNameEl.textContent=activeMid.name;
+      midBossHpEl.textContent=`${activeMid.boss.hp}/${activeMid.boss.maxHp}`;
+    }else{
+      midBossHud.style.display="none";
+    }
+
+    bossHud.style.display = (boss.active || !boss.alive) ? "inline-flex" : "none";
+    bossHpEl.textContent = `${boss.hp}/${boss.maxHp}`;
+  }
+
+  function spark(x,y,color,count=10){
+    for(let i=0;i<count;i++){
+      particles.push({
+        x,y,
+        vx:(Math.random()-.5)*150,
+        vy:-40-Math.random()*150,
+        life:.6+Math.random()*.5,
+        color
+      });
+    }
+  }
+
+  function resetPlayer(){
+    player.x = player.respawnX;
+    player.y = player.respawnY;
+    player.vx = 0;
+    player.vy = 0;
+    player.inv = 1.4;
+    player.fireCooldown = 0;
+    player.jumpCount = 0;
+    player.gliding = false;
+    cameraX = Math.max(0,Math.min(WORLD-W,player.x-250));
+  }
+
+  function restart(){
+    score=0;
+    lives=2;
+    timeLeft=180;
+    paused=false;
+    gameOver=false;
+    clear=false;
+    checkpoint=false;
+    cameraX=0;
+    particles=[];
+    fireballs=[];
+    boomerangs=[];
+    windOrbs=[];
+    crabBalls=[];
+    boarShockwaves=[];
+    bossFireballs=[];
+    bossMeteors=[];
+    flamePillars=[];
+    homingOrbs=[];
+
+    player.respawnX=70;
+    player.respawnY=280;
+    player.power="normal";
+    player.jumpCount=0;
+    player.gliding=false;
+
+    coins.forEach(c=>c.taken=false);
+    keys.forEach(k=>k.taken=false);
+    mushrooms.forEach(m=>m.taken=false);
+    flowers.forEach(f=>f.taken=false);
+    leaves.forEach(l=>l.taken=false);
+
+    enemies.forEach((e,i)=>Object.assign(e,enemyBase[i]));
+
+    movers.forEach((m,i)=>Object.assign(m,moverBase[i]));
+
+    midBoss.x=2475;
+    midBoss.y=294;
+    midBoss.hp=midBoss.maxHp;
+    midBoss.alive=true;
+    midBoss.active=false;
+    midBoss.vx=-105;
+    midBoss.throwCooldown=1.25;
+    midBoss.flash=0;
+    midBoss.facing=-1;
+
+    boarBoss.x=3490;
+    boarBoss.y=294;
+    boarBoss.hp=boarBoss.maxHp;
+    boarBoss.alive=true;
+    boarBoss.active=false;
+    boarBoss.vx=-130;
+    boarBoss.vy=0;
+    boarBoss.onGround=true;
+    boarBoss.dashCooldown=1.6;
+    boarBoss.jumpCooldown=1.05;
+    boarBoss.slamCooldown=2.8;
+    boarBoss.comboDashes=0;
+    boarBoss.comboTimer=0;
+    boarBoss.flash=0;
+    boarBoss.facing=-1;
+
+    batBoss.x=4200;
+    batBoss.y=175;
+    batBoss.hp=batBoss.maxHp;
+    batBoss.alive=true;
+    batBoss.active=false;
+    batBoss.t=0;
+    batBoss.orbCooldown=1.0;
+    batBoss.flash=0;
+    batBoss.facing=-1;
+
+    crabBoss.x=5030;
+    crabBoss.y=292;
+    crabBoss.hp=crabBoss.maxHp;
+    crabBoss.alive=true;
+    crabBoss.active=false;
+    crabBoss.vx=-105;
+    crabBoss.cannonCooldown=1.15;
+    crabBoss.flash=0;
+    crabBoss.facing=-1;
+
+    boss.x=5740;
+    boss.y=282;
+    boss.hp=boss.maxHp;
+    boss.alive=true;
+    boss.active=false;
+    boss.vx=-120;
+    boss.vy=0;
+    boss.onGround=true;
+    boss.shootCooldown=0.70;
+    boss.burstCooldown=2.7;
+    boss.jumpCooldown=1.25;
+    boss.dashCooldown=2.2;
+    boss.meteorCooldown=4.0;
+    boss.pillarCooldown=5.2;
+    boss.homingCooldown=3.4;
+    boss.facing=-1;
+    boss.flash=0;
+
+    resetPlayer();
+    pauseBtn.textContent="⏸ 일시정지";
+    msgEl.textContent="🔑 열쇠 3개를 모은 뒤 4명의 중간보스를 차례로 돌파하세요.";
+    hud();
+    canvas.focus();
+  }
+
+  function losePowerOrLife(reason){
+    if(player.inv>0 || gameOver || clear) return;
+
+    if(player.power==="raccoonFire"){
+      player.power="raccoon";
+      player.inv=1.5;
+      player.vy=-230;
+      player.gliding=false;
+      msgEl.textContent="🔥 불꽃 능력만 해제되었습니다. 너구리 변신은 유지됩니다!";
+      hud();
+      return;
+    }
+
+    if(player.power==="fire"){
+      player.power="big";
+      player.inv=1.5;
+      player.vy=-230;
+      msgEl.textContent="🔥 불꽃 능력이 해제되었습니다!";
+      hud();
+      return;
+    }
+
+    if(player.power==="raccoon"){
+      player.power="big";
+      player.inv=1.5;
+      player.vy=-230;
+      player.gliding=false;
+      msgEl.textContent="🍃 날으는 너구리 변신이 해제되었습니다!";
+      hud();
+      return;
+    }
+
+    if(player.power==="big"){
+      player.power="normal";
+    player.jumpCount=0;
+    player.gliding=false;
+      player.inv=1.5;
+      player.vy=-230;
+      msgEl.textContent="🍄 강화 상태가 해제되었습니다!";
+      hud();
+      return;
+    }
+
+    lives--;
+    hud();
+
+    if(lives<=0){
+      gameOver=true;
+      msgEl.textContent=`💥 GAME OVER · ${reason}`;
+      return;
+    }
+
+    msgEl.textContent=`💥 ${reason} 체크포인트에서 다시 시작합니다.`;
+    resetPlayer();
+  }
+
+  function shootFireball(){
+    if(player.power!=="fire" && player.power!=="raccoonFire"){
+      msgEl.textContent="🔥 불꽃 아이템을 획득해야 사용할 수 있습니다.";
+      return;
+    }
+    if(paused || gameOver || clear || player.fireCooldown>0) return;
+
+    player.fireCooldown=.3;
+    fireballs.push({
+      x:player.x+player.w/2+(player.face*12),
+      y:player.y+23,
+      vx:player.face*370,
+      vy:-45,
+      r:7,
+      life:2.2,
+      dead:false
+    });
+    spark(player.x+17,player.y+22,"#ff9738",6);
+  }
+
+  function damageBoss(amount){
+    if(!boss.alive || boss.flash>0) return;
+
+    boss.hp = Math.max(0,boss.hp-amount);
+    boss.flash=.25;
+    score += amount===2 ? 450 : 300;
+    spark(boss.x+boss.w/2,boss.y+boss.h/2,"#ffd34e",18);
+
+    if(boss.hp<=0){
+      boss.alive=false;
+      bossFireballs=[];
+      bossMeteors=[];
+      flamePillars=[];
+      homingOrbs=[];
+      score+=5000;
+      spark(boss.x+boss.w/2,boss.y+boss.h/2,"#ffd34e",45);
+      msgEl.textContent="🏆 쿠퍼왕 격파! 황금 금고 게이트가 열렸습니다!";
+    }else{
+      msgEl.textContent=`👑 공격 성공! 쿠퍼왕 체력 ${boss.hp}/${boss.maxHp}`;
+    }
+    hud();
+  }
+
+  function updateMover(m,dt){
+    const before=m.x;
+    m.x+=m.v*dt;
+    if(m.x<m.min){m.x=m.min;m.v=Math.abs(m.v);}
+    if(m.x>m.max){m.x=m.max;m.v=-Math.abs(m.v);}
+    m.dx=m.x-before;
+  }
+
+  function damageMidBoss(amount){
+    if(!midBoss.alive || midBoss.flash>0) return;
+
+    midBoss.hp = Math.max(0,midBoss.hp-amount);
+    midBoss.flash=.22;
+    score += amount===2 ? 350 : 225;
+
+    spark(
+      midBoss.x+midBoss.w/2,
+      midBoss.y+midBoss.h/2,
+      "#75c982",
+      16
+    );
+
+    if(midBoss.hp<=0){
+      midBoss.alive=false;
+      boomerangs=[];
+      score+=1500;
+
+      spark(
+        midBoss.x+midBoss.w/2,
+        midBoss.y+midBoss.h/2,
+        "#ffd34e",
+        34
+      );
+
+      player.respawnX=2710;
+      player.respawnY=304;
+      msgEl.textContent=
+        "🪃 거북대장 격파! 체크포인트 저장. 더 긴 길이 이어집니다!";
+    }else{
+      msgEl.textContent=
+        `🪃 거북대장 공격 성공! 남은 체력 ${midBoss.hp}/${midBoss.maxHp}`;
+    }
+
+    hud();
+  }
+
+  function throwBoomerang(offsetY=0,speedBonus=0){
+    const direction = player.x<midBoss.x ? -1 : 1;
+    midBoss.facing=direction;
+
+    boomerangs.push({
+      x:midBoss.x+midBoss.w/2+direction*18,
+      y:midBoss.y+22+offsetY,
+      vx:direction*(285+speedBonus),
+      vy:-85+offsetY*1.2,
+      r:11,
+      age:0,
+      returning:false,
+      dead:false,
+      spin:0
+    });
+  }
+
+  function updateMidBoss(dt){
+    if(player.x>2240 && midBoss.alive){
+      if(!midBoss.active){
+        midBoss.active=true;
+        msgEl.textContent=
+          "🪃 중간보스 거북대장 등장! 되돌아오는 부메랑을 조심하세요!";
+        hud();
+      }
+    }
+
+    if(!midBoss.active || !midBoss.alive) return;
+
+    if(midBoss.flash>0) midBoss.flash-=dt;
+
+    const direction = player.x<midBoss.x ? -1 : 1;
+    midBoss.facing=direction;
+
+    const speed = midBoss.hp<=3 ? 155 : 112;
+    midBoss.vx = direction*speed;
+    midBoss.x += midBoss.vx*dt;
+
+    if(midBoss.x<midBoss.minX) midBoss.x=midBoss.minX;
+    if(midBoss.x+midBoss.w>midBoss.maxX) midBoss.x=midBoss.maxX-midBoss.w;
+
+    midBoss.throwCooldown-=dt;
+
+    if(midBoss.throwCooldown<=0){
+      if(midBoss.hp<=3){
+        // 2페이즈: 높이가 다른 부메랑 2개를 빠르게 투척
+        throwBoomerang(-8,55);
+        throwBoomerang(13,20);
+        midBoss.throwCooldown=.82;
+        msgEl.textContent="⚠️ 거북대장 2연속 부메랑!";
+      }else{
+        throwBoomerang(0,0);
+        midBoss.throwCooldown=1.28;
+      }
+    }
+
+    if(rect(player,midBoss)){
+      const stomp =
+        player.vy>110 &&
+        (player.y+player.h-midBoss.y)<22;
+
+      if(stomp){
+        player.y=midBoss.y-player.h-3;
+        player.vy=-410;
+        damageMidBoss(2);
+      }else{
+        losePowerOrLife("거북대장과 충돌했습니다.");
+      }
+    }
+
+    /*
+      살아 있는 동안 다음 보스 지역으로 진행 불가
+    */
+    if(
+      midBoss.alive &&
+      player.x+player.w>midBossBarrier.x &&
+      player.x<midBossBarrier.x+midBossBarrier.w+25
+    ){
+      player.x=midBossBarrier.x-player.w-3;
+      player.vx=0;
+      msgEl.textContent=
+        `🚧 거북대장을 먼저 쓰러뜨리세요! 체력 ${midBoss.hp}/${midBoss.maxHp}`;
+    }
+  }
+
+  function updateBoomerangs(dt){
+    boomerangs.forEach(b=>{
+      b.age+=dt;
+      b.spin+=dt*13;
+
+      /*
+        약 0.72초 동안 전진한 뒤 거북대장에게 되돌아옴
+      */
+      if(!b.returning && b.age>.72){
+        b.returning=true;
+      }
+
+      if(!b.returning){
+        b.x+=b.vx*dt;
+        b.y+=b.vy*dt;
+        b.vy+=180*dt;
+      }else{
+        const targetX=midBoss.x+midBoss.w/2;
+        const targetY=midBoss.y+24;
+        const dx=targetX-b.x;
+        const dy=targetY-b.y;
+        const dist=Math.max(1,Math.hypot(dx,dy));
+        const returnSpeed=midBoss.hp<=3 ? 430 : 350;
+
+        b.x+=(dx/dist)*returnSpeed*dt;
+        b.y+=(dy/dist)*returnSpeed*dt;
+
+        if(b.age>1 && dist<24){
+          b.dead=true;
+        }
+      }
+
+      const hitPlayer =
+        b.x+b.r>player.x &&
+        b.x-b.r<player.x+player.w &&
+        b.y+b.r>player.y &&
+        b.y-b.r<player.y+player.h;
+
+      if(hitPlayer && !b.dead){
+        b.dead=true;
+        losePowerOrLife("거북대장의 부메랑에 맞았습니다.");
+      }
+
+      if(b.age>3.2 || b.x<0 || b.x>WORLD || b.y>H+100){
+        b.dead=true;
+      }
+    });
+
+    boomerangs=boomerangs.filter(b=>!b.dead);
+  }
+
+  function updatePlayerFireballs(dt){
+    fireballs.forEach(fb=>{
+      fb.x += fb.vx*dt;
+      fb.y += fb.vy*dt;
+      fb.vy += 220*dt;
+      fb.life -= dt;
+
+      const floorHit = grounds.find(g =>
+        fb.x>g.x && fb.x<g.x+g.w &&
+        fb.y+fb.r>=g.y && fb.y+fb.r<=g.y+16 &&
+        fb.vy>0
+      );
+
+      if(floorHit){
+        fb.y=floorHit.y-fb.r-1;
+        fb.vy=-170;
+      }
+
+      for(const e of enemies){
+        if(!e.alive || fb.dead) continue;
+        const hit = fb.x+fb.r>e.x && fb.x-fb.r<e.x+e.w &&
+                    fb.y+fb.r>e.y && fb.y-fb.r<e.y+e.h;
+        if(hit){
+          e.alive=false;
+          fb.dead=true;
+          score+=300;
+          spark(e.x+16,e.y+10,"#ff943a",14);
+          msgEl.textContent="🔥 불꽃으로 적 처치! +300점";
+          hud();
+        }
+      }
+
+      if(midBoss.active && midBoss.alive && !fb.dead){
+        const hitMid =
+          fb.x+fb.r>midBoss.x &&
+          fb.x-fb.r<midBoss.x+midBoss.w &&
+          fb.y+fb.r>midBoss.y &&
+          fb.y-fb.r<midBoss.y+midBoss.h;
+
+        if(hitMid){
+          fb.dead=true;
+          damageMidBoss(1);
+        }
+      }
+
+      if(boarBoss.active && boarBoss.alive && !fb.dead){
+        const hit =
+          fb.x+fb.r>boarBoss.x &&
+          fb.x-fb.r<boarBoss.x+boarBoss.w &&
+          fb.y+fb.r>boarBoss.y &&
+          fb.y-fb.r<boarBoss.y+boarBoss.h;
+        if(hit){
+          fb.dead=true;
+          damageBoarBoss(1);
+        }
+      }
+
+      if(batBoss.active && batBoss.alive && !fb.dead){
+        const hit =
+          fb.x+fb.r>batBoss.x &&
+          fb.x-fb.r<batBoss.x+batBoss.w &&
+          fb.y+fb.r>batBoss.y &&
+          fb.y-fb.r<batBoss.y+batBoss.h;
+        if(hit){
+          fb.dead=true;
+          damageBatBoss(1);
+        }
+      }
+
+      if(crabBoss.active && crabBoss.alive && !fb.dead){
+        const hit =
+          fb.x+fb.r>crabBoss.x &&
+          fb.x-fb.r<crabBoss.x+crabBoss.w &&
+          fb.y+fb.r>crabBoss.y &&
+          fb.y-fb.r<crabBoss.y+crabBoss.h;
+        if(hit){
+          fb.dead=true;
+          damageCrabBoss(1);
+        }
+      }
+
+      if(boss.active && boss.alive && !fb.dead){
+        const hit = fb.x+fb.r>boss.x && fb.x-fb.r<boss.x+boss.w &&
+                    fb.y+fb.r>boss.y && fb.y-fb.r<boss.y+boss.h;
+        if(hit){
+          fb.dead=true;
+          damageBoss(1);
+        }
+      }
+
+      if(fb.life<=0 || fb.x<0 || fb.x>WORLD || fb.y>H+80) fb.dead=true;
+    });
+
+    fireballs = fireballs.filter(f=>!f.dead);
+  }
+
+  function damageBoarBoss(amount){
+    if(!boarBoss.alive || boarBoss.flash>0) return;
+
+    boarBoss.hp=Math.max(0,boarBoss.hp-amount);
+    boarBoss.flash=.22;
+    score+=amount===2?420:250;
+    spark(boarBoss.x+31,boarBoss.y+28,"#d68b54",18);
+
+    if(boarBoss.hp<=0){
+      boarBoss.alive=false;
+      score+=1800;
+      player.respawnX=3600;
+      player.respawnY=304;
+      spark(boarBoss.x+31,boarBoss.y+28,"#ffd36b",34);
+      msgEl.textContent="🐗 멧돼지대장 격파! 체크포인트 저장. 박쥐 협곡으로 이동하세요!";
+    }else{
+      msgEl.textContent=`🐗 멧돼지대장 체력 ${boarBoss.hp}/${boarBoss.maxHp}`;
+    }
+    hud();
+  }
+
+  function spawnBoarShockwave(x,dir){
+    boarShockwaves.push({
+      x,
+      y:334,
+      vx:dir*330,
+      w:34,
+      h:18,
+      life:1.7,
+      dead:false
+    });
+  }
+
+  function updateBoarShockwaves(dt){
+    boarShockwaves.forEach(s=>{
+      s.x+=s.vx*dt;
+      s.life-=dt;
+
+      if(rect(player,{x:s.x,y:s.y,w:s.w,h:s.h}) && !s.dead){
+        s.dead=true;
+        losePowerOrLife("멧돼지대장의 지면 충격파에 맞았습니다.");
+      }
+
+      if(s.life<=0 || s.x<3200 || s.x>3750) s.dead=true;
+    });
+
+    boarShockwaves=boarShockwaves.filter(s=>!s.dead);
+  }
+
+  function updateBoarBoss(dt){
+    if(player.x>3260 && !midBoss.alive && boarBoss.alive && !boarBoss.active){
+      boarBoss.active=true;
+      msgEl.textContent="🐗 멧돼지대장 강화전! 연속 돌진과 지면 충격파를 조심하세요!";
+      hud();
+    }
+
+    if(!boarBoss.active || !boarBoss.alive) return;
+    if(boarBoss.flash>0) boarBoss.flash-=dt;
+
+    const dir=player.x<boarBoss.x?-1:1;
+    boarBoss.facing=dir;
+
+    const phase2=boarBoss.hp<=6;
+    const phase3=boarBoss.hp<=3;
+
+    const walkSpeed=phase3?215:phase2?175:145;
+
+    /*
+      연속 돌진 패턴
+      HP 6 이하: 2연속
+      HP 3 이하: 3연속
+    */
+    if(boarBoss.comboDashes>0){
+      boarBoss.comboTimer-=dt;
+      boarBoss.vx=boarBoss.facing*(phase3?430:355);
+
+      if(boarBoss.comboTimer<=0){
+        boarBoss.comboDashes--;
+
+        if(boarBoss.comboDashes>0){
+          boarBoss.facing*=-1;
+          boarBoss.comboTimer=phase3?.42:.55;
+          msgEl.textContent=`💨 멧돼지대장 연속 돌진! ${boarBoss.comboDashes}회 남음`;
+        }else{
+          boarBoss.dashCooldown=phase3?.85:1.25;
+        }
+      }
+    }else if(boarBoss.onGround){
+      boarBoss.vx=dir*walkSpeed;
+    }
+
+    boarBoss.jumpCooldown-=dt;
+    boarBoss.dashCooldown-=dt;
+    boarBoss.slamCooldown-=dt;
+
+    /*
+      점프 후 내려찍기
+    */
+    if(
+      boarBoss.onGround &&
+      boarBoss.jumpCooldown<=0 &&
+      boarBoss.comboDashes===0
+    ){
+      boarBoss.vy=phase3?-690:phase2?-630:-565;
+      boarBoss.vx=dir*(phase3?320:phase2?270:235);
+      boarBoss.onGround=false;
+      boarBoss.jumpCooldown=phase3?.72:phase2?.92:1.22;
+      msgEl.textContent="🐗 멧돼지대장 고공 점프!";
+    }
+
+    /*
+      지상 연속 돌진 시작
+    */
+    if(
+      boarBoss.onGround &&
+      boarBoss.dashCooldown<=0 &&
+      boarBoss.comboDashes===0
+    ){
+      boarBoss.facing=dir;
+      boarBoss.comboDashes=phase3?3:phase2?2:1;
+      boarBoss.comboTimer=phase3?.45:.62;
+      msgEl.textContent=
+        phase3
+        ? "⚠️ 멧돼지대장 3연속 광폭 돌진!"
+        : phase2
+        ? "⚠️ 멧돼지대장 2연속 돌진!"
+        : "💨 멧돼지대장 돌진!";
+    }
+
+    /*
+      HP 6 이하부터 지면 충격파
+    */
+    if(
+      phase2 &&
+      boarBoss.onGround &&
+      boarBoss.slamCooldown<=0 &&
+      boarBoss.comboDashes===0
+    ){
+      spawnBoarShockwave(boarBoss.x+boarBoss.w/2,-1);
+      spawnBoarShockwave(boarBoss.x+boarBoss.w/2,1);
+      boarBoss.slamCooldown=phase3?1.45:2.25;
+      msgEl.textContent="💥 멧돼지대장 지면 충격파! 점프로 피하세요!";
+    }
+
+    const wasInAir=!boarBoss.onGround;
+
+    boarBoss.vy+=GRAVITY*.98*dt;
+    boarBoss.x+=boarBoss.vx*dt;
+    boarBoss.y+=boarBoss.vy*dt;
+
+    const floorY=352-boarBoss.h;
+
+    if(boarBoss.y>=floorY){
+      boarBoss.y=floorY;
+
+      /*
+        공중에서 강하게 착지하면 좌우 충격파 추가
+      */
+      if(wasInAir && boarBoss.vy>350 && phase2){
+        spawnBoarShockwave(boarBoss.x+boarBoss.w/2,-1);
+        spawnBoarShockwave(boarBoss.x+boarBoss.w/2,1);
+        spark(boarBoss.x+31,344,"#c88a5a",18);
+      }
+
+      boarBoss.vy=0;
+      boarBoss.onGround=true;
+    }
+
+    if(boarBoss.x<boarBoss.minX){
+      boarBoss.x=boarBoss.minX;
+      boarBoss.facing=1;
+      boarBoss.vx=Math.abs(boarBoss.vx);
+    }
+
+    if(boarBoss.x+boarBoss.w>boarBoss.maxX){
+      boarBoss.x=boarBoss.maxX-boarBoss.w;
+      boarBoss.facing=-1;
+      boarBoss.vx=-Math.abs(boarBoss.vx);
+    }
+
+    if(rect(player,boarBoss)){
+      const stomp=
+        player.vy>125 &&
+        (player.y+player.h-boarBoss.y)<22;
+
+      if(stomp){
+        player.y=boarBoss.y-player.h-3;
+        player.vy=-455;
+        damageBoarBoss(2);
+      }else{
+        losePowerOrLife(
+          boarBoss.comboDashes>0
+          ? "멧돼지대장의 연속 돌진에 맞았습니다."
+          : "멧돼지대장과 충돌했습니다."
+        );
+      }
+    }
+
+    if(
+      boarBoss.alive &&
+      player.x+player.w>boarBarrier.x &&
+      player.x<boarBarrier.x+boarBarrier.w+25
+    ){
+      player.x=boarBarrier.x-player.w-3;
+      player.vx=0;
+      msgEl.textContent=`🚧 멧돼지대장을 먼저 쓰러뜨리세요! ${boarBoss.hp}/${boarBoss.maxHp}`;
+    }
+  }
+
+  function damageBatBoss(amount){
+    if(!batBoss.alive || batBoss.flash>0) return;
+
+    batBoss.hp=Math.max(0,batBoss.hp-amount);
+    batBoss.flash=.20;
+    score+=amount===2?450:270;
+    spark(batBoss.x+29,batBoss.y+22,"#a98ad8",18);
+
+    if(batBoss.hp<=0){
+      batBoss.alive=false;
+      windOrbs=[];
+      score+=2000;
+      player.respawnX=4410;
+      player.respawnY=304;
+      spark(batBoss.x+29,batBoss.y+22,"#ffd36b",36);
+      msgEl.textContent="🦇 박쥐대장 격파! 체크포인트 저장. 대포 요새로 이동하세요!";
+    }else{
+      msgEl.textContent=`🦇 박쥐대장 체력 ${batBoss.hp}/${batBoss.maxHp}`;
+    }
+    hud();
+  }
+
+  function spawnWindOrb(angle,speed){
+    windOrbs.push({
+      x:batBoss.x+batBoss.w/2,
+      y:batBoss.y+batBoss.h/2,
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed,
+      r:8,
+      life:4,
+      dead:false
+    });
+  }
+
+  function updateBatBoss(dt){
+    if(player.x>3880 && !boarBoss.alive && batBoss.alive && !batBoss.active){
+      batBoss.active=true;
+      msgEl.textContent="🦇 중간보스 박쥐대장! 공중 탄막을 피하세요!";
+      hud();
+    }
+
+    if(!batBoss.active || !batBoss.alive) return;
+    if(batBoss.flash>0) batBoss.flash-=dt;
+
+    batBoss.t+=dt;
+    const low=batBoss.hp<=3;
+    const chase=player.x<batBoss.x?-1:1;
+    batBoss.facing=chase;
+
+    batBoss.x+=chase*(low?115:78)*dt;
+    batBoss.x=Math.max(batBoss.minX,Math.min(batBoss.maxX-batBoss.w,batBoss.x));
+    batBoss.y=batBoss.baseY + Math.sin(batBoss.t*(low?5.2:3.8))*70;
+
+    batBoss.orbCooldown-=dt;
+    if(batBoss.orbCooldown<=0){
+      const dx=(player.x+player.w/2)-(batBoss.x+batBoss.w/2);
+      const dy=(player.y+player.h/2)-(batBoss.y+batBoss.h/2);
+      const base=Math.atan2(dy,dx);
+
+      if(low){
+        [-.42,0,.42].forEach(a=>spawnWindOrb(base+a,300));
+        batBoss.orbCooldown=.72;
+        msgEl.textContent="🌪 박쥐대장 3방향 바람탄!";
+      }else{
+        spawnWindOrb(base,245);
+        batBoss.orbCooldown=1.05;
+      }
+    }
+
+    if(rect(player,batBoss)){
+      const stomp=player.vy>125 && (player.y+player.h-batBoss.y)<20;
+      if(stomp){
+        player.y=batBoss.y-player.h-2;
+        player.vy=-440;
+        damageBatBoss(2);
+      }else{
+        losePowerOrLife("박쥐대장과 충돌했습니다.");
+      }
+    }
+
+    if(
+      batBoss.alive &&
+      player.x+player.w>batBarrier.x &&
+      player.x<batBarrier.x+batBarrier.w+25
+    ){
+      player.x=batBarrier.x-player.w-3;
+      player.vx=0;
+      msgEl.textContent=`🚧 박쥐대장을 먼저 쓰러뜨리세요! ${batBoss.hp}/${batBoss.maxHp}`;
+    }
+  }
+
+  function updateWindOrbs(dt){
+    windOrbs.forEach(o=>{
+      o.x+=o.vx*dt;
+      o.y+=o.vy*dt;
+      o.life-=dt;
+
+      const hit=
+        o.x+o.r>player.x &&
+        o.x-o.r<player.x+player.w &&
+        o.y+o.r>player.y &&
+        o.y-o.r<player.y+player.h;
+
+      if(hit && !o.dead){
+        o.dead=true;
+        losePowerOrLife("박쥐대장의 바람탄에 맞았습니다.");
+      }
+
+      if(o.life<=0 || o.x<0 || o.x>WORLD || o.y<-80 || o.y>H+80) o.dead=true;
+    });
+
+    windOrbs=windOrbs.filter(o=>!o.dead);
+  }
+
+  function damageCrabBoss(amount){
+    if(!crabBoss.alive || crabBoss.flash>0) return;
+
+    crabBoss.hp=Math.max(0,crabBoss.hp-amount);
+    crabBoss.flash=.22;
+    score+=amount===2?470:290;
+    spark(crabBoss.x+33,crabBoss.y+30,"#e6785e",18);
+
+    if(crabBoss.hp<=0){
+      crabBoss.alive=false;
+      crabBalls=[];
+      score+=2300;
+      player.respawnX=5200;
+      player.respawnY=304;
+      spark(crabBoss.x+33,crabBoss.y+30,"#ffd36b",38);
+      msgEl.textContent="🦀 게대장 격파! 마지막 체크포인트 저장. 이제 쿠퍼왕 성으로!";
+    }else{
+      msgEl.textContent=`🦀 게대장 체력 ${crabBoss.hp}/${crabBoss.maxHp}`;
+    }
+    hud();
+  }
+
+  function fireCrabBall(extraVx=0,extraVy=0){
+    const dir=player.x<crabBoss.x?-1:1;
+    crabBoss.facing=dir;
+    crabBalls.push({
+      x:crabBoss.x+crabBoss.w/2+dir*20,
+      y:crabBoss.y+18,
+      vx:dir*(260+extraVx),
+      vy:-245+extraVy,
+      r:10,
+      bounces:0,
+      life:5,
+      dead:false
+    });
+  }
+
+  function updateCrabBoss(dt){
+    if(player.x>4670 && !batBoss.alive && crabBoss.alive && !crabBoss.active){
+      crabBoss.active=true;
+      msgEl.textContent="🦀 중간보스 대포 게대장! 튀는 포탄을 조심하세요!";
+      hud();
+    }
+
+    if(!crabBoss.active || !crabBoss.alive) return;
+    if(crabBoss.flash>0) crabBoss.flash-=dt;
+
+    const dir=player.x<crabBoss.x?-1:1;
+    crabBoss.facing=dir;
+    const low=crabBoss.hp<=4;
+
+    crabBoss.vx=dir*(low?145:95);
+    crabBoss.x+=crabBoss.vx*dt;
+    crabBoss.x=Math.max(crabBoss.minX,Math.min(crabBoss.maxX-crabBoss.w,crabBoss.x));
+
+    crabBoss.cannonCooldown-=dt;
+    if(crabBoss.cannonCooldown<=0){
+      if(low){
+        fireCrabBall(45,-35);
+        fireCrabBall(0,25);
+        fireCrabBall(-35,70);
+        crabBoss.cannonCooldown=.82;
+        msgEl.textContent="💣 게대장 3연속 튀는 포탄!";
+      }else{
+        fireCrabBall();
+        crabBoss.cannonCooldown=1.18;
+      }
+    }
+
+    if(rect(player,crabBoss)){
+      const stomp=player.vy>115 && (player.y+player.h-crabBoss.y)<23;
+      if(stomp){
+        player.y=crabBoss.y-player.h-3;
+        player.vy=-430;
+        damageCrabBoss(2);
+      }else{
+        losePowerOrLife("게대장의 집게 공격에 맞았습니다.");
+      }
+    }
+
+    if(
+      crabBoss.alive &&
+      player.x+player.w>crabBarrier.x &&
+      player.x<crabBarrier.x+crabBarrier.w+25
+    ){
+      player.x=crabBarrier.x-player.w-3;
+      player.vx=0;
+      msgEl.textContent=`🚧 게대장을 먼저 쓰러뜨리세요! ${crabBoss.hp}/${crabBoss.maxHp}`;
+    }
+  }
+
+  function updateCrabBalls(dt){
+    crabBalls.forEach(b=>{
+      b.x+=b.vx*dt;
+      b.y+=b.vy*dt;
+      b.vy+=620*dt;
+      b.life-=dt;
+
+      const floor=grounds.find(g =>
+        b.x>g.x && b.x<g.x+g.w &&
+        b.y+b.r>=g.y && b.y+b.r<=g.y+20 &&
+        b.vy>0
+      );
+
+      if(floor && b.bounces<3){
+        b.y=floor.y-b.r-1;
+        b.vy=-(250-b.bounces*45);
+        b.bounces++;
+      }
+
+      const hit=
+        b.x+b.r>player.x &&
+        b.x-b.r<player.x+player.w &&
+        b.y+b.r>player.y &&
+        b.y-b.r<player.y+player.h;
+
+      if(hit && !b.dead){
+        b.dead=true;
+        losePowerOrLife("게대장의 포탄에 맞았습니다.");
+      }
+
+      if(b.life<=0 || b.x<0 || b.x>WORLD || b.y>H+100) b.dead=true;
+    });
+
+    crabBalls=crabBalls.filter(b=>!b.dead);
+  }
+
+  function spawnMeteor(targetX,delay=0){
+    bossMeteors.push({
+      x:Math.max(boss.minX,Math.min(boss.maxX-18,targetX)),
+      y:-40-delay*80,
+      vy:220+delay*40,
+      r:13,
+      life:5,
+      dead:false
+    });
+  }
+
+  function updateBossMeteors(dt){
+    bossMeteors.forEach(m=>{
+      m.vy+=240*dt;
+      m.y+=m.vy*dt;
+      m.life-=dt;
+
+      const hit =
+        m.x+m.r>player.x &&
+        m.x-m.r<player.x+player.w &&
+        m.y+m.r>player.y &&
+        m.y-m.r<player.y+player.h;
+
+      if(hit && !m.dead){
+        m.dead=true;
+        losePowerOrLife("쿠퍼왕의 운석에 맞았습니다.");
+      }
+
+      if(m.y+m.r>=352){
+        spark(m.x,340,"#ff7a3d",16);
+
+        /*
+          착지 시 작은 좌우 파편 불꽃
+        */
+        bossFireballs.push({
+          x:m.x,y:334,vx:-230,vy:-70,r:7,life:2.2,dead:false
+        });
+        bossFireballs.push({
+          x:m.x,y:334,vx:230,vy:-70,r:7,life:2.2,dead:false
+        });
+
+        m.dead=true;
+      }
+
+      if(m.life<=0) m.dead=true;
+    });
+
+    bossMeteors=bossMeteors.filter(m=>!m.dead);
+  }
+
+  function spawnFlamePillar(x,delay=0){
+    flamePillars.push({
+      x,
+      y:352,
+      w:34,
+      h:0,
+      timer:-delay,
+      active:false,
+      life:1.35,
+      dead:false
+    });
+  }
+
+  function updateFlamePillars(dt){
+    flamePillars.forEach(p=>{
+      p.timer+=dt;
+
+      if(!p.active && p.timer>=0){
+        p.active=true;
+        p.h=125;
+      }
+
+      if(p.active){
+        p.life-=dt;
+
+        if(
+          rect(player,{
+            x:p.x-p.w/2,
+            y:p.y-p.h,
+            w:p.w,
+            h:p.h
+          }) &&
+          !p.dead
+        ){
+          p.dead=true;
+          losePowerOrLife("쿠퍼왕의 화염 기둥에 닿았습니다.");
+        }
+
+        if(p.life<=0) p.dead=true;
+      }
+    });
+
+    flamePillars=flamePillars.filter(p=>!p.dead);
+  }
+
+  function spawnHomingOrb(){
+    homingOrbs.push({
+      x:boss.x+boss.w/2,
+      y:boss.y+22,
+      vx:boss.facing*100,
+      vy:-20,
+      speed:185,
+      life:4.8,
+      dead:false
+    });
+  }
+
+  function updateHomingOrbs(dt){
+    homingOrbs.forEach(o=>{
+      const tx=player.x+player.w/2;
+      const ty=player.y+player.h/2;
+      const dx=tx-o.x;
+      const dy=ty-o.y;
+      const dist=Math.max(1,Math.hypot(dx,dy));
+
+      const steer=260;
+      o.vx+=(dx/dist)*steer*dt;
+      o.vy+=(dy/dist)*steer*dt;
+
+      const speed=Math.max(1,Math.hypot(o.vx,o.vy));
+      if(speed>o.speed){
+        o.vx=o.vx/speed*o.speed;
+        o.vy=o.vy/speed*o.speed;
+      }
+
+      o.x+=o.vx*dt;
+      o.y+=o.vy*dt;
+      o.life-=dt;
+
+      const hit =
+        o.x+10>player.x &&
+        o.x-10<player.x+player.w &&
+        o.y+10>player.y &&
+        o.y-10<player.y+player.h;
+
+      if(hit && !o.dead){
+        o.dead=true;
+        losePowerOrLife("쿠퍼왕의 추적 불꽃에 맞았습니다.");
+      }
+
+      if(o.life<=0 || o.x<0 || o.x>WORLD || o.y<-100 || o.y>H+100){
+        o.dead=true;
+      }
+    });
+
+    homingOrbs=homingOrbs.filter(o=>!o.dead);
+  }
+
+  function updateBoss(dt){
+    if(player.x>5480 && keysGot()===3 && allMiniBossesDefeated() && boss.alive){
+      if(!boss.active){
+        boss.active=true;
+        msgEl.textContent="👑 FINAL BOSS! 쿠퍼왕 강화 3페이즈가 시작됩니다!";
+        hud();
+      }
+    }
+
+    if(!boss.active || !boss.alive) return;
+
+    if(boss.flash>0) boss.flash-=dt;
+
+    /*
+      3페이즈
+      18~13 : 빠른 이동 + 점프 + 불꽃
+      12~7  : 연속 불꽃 + 운석 + 추적탄
+      6~1   : 초고속 이동 + 5방향 불꽃 + 화염기둥 + 운석 + 추적탄
+    */
+    const phase2=boss.hp<=12;
+    const phase3=boss.hp<=6;
+
+    let groundSpeed=150;
+    let jumpPower=585;
+    let jumpInterval=1.18;
+    let fireInterval=.62;
+
+    if(phase2){
+      groundSpeed=205;
+      jumpPower=645;
+      jumpInterval=.82;
+      fireInterval=.40;
+    }
+
+    if(phase3){
+      groundSpeed=275;
+      jumpPower=710;
+      jumpInterval=.52;
+      fireInterval=.25;
+    }
+
+    const towardPlayer=player.x<boss.x?-1:1;
+    boss.facing=towardPlayer;
+
+    if(boss.onGround){
+      boss.vx=towardPlayer*groundSpeed;
+    }else{
+      boss.vx+=towardPlayer*(phase3?420:310)*dt;
+
+      const maxAirSpeed=phase3?360:phase2?285:225;
+      boss.vx=Math.max(-maxAirSpeed,Math.min(maxAirSpeed,boss.vx));
+    }
+
+    boss.jumpCooldown-=dt;
+    boss.dashCooldown-=dt;
+    boss.shootCooldown-=dt;
+    boss.burstCooldown-=dt;
+    boss.meteorCooldown-=dt;
+    boss.pillarCooldown-=dt;
+    boss.homingCooldown-=dt;
+
+    /*
+      점프 추적
+    */
+    if(boss.onGround && boss.jumpCooldown<=0){
+      boss.vy=-jumpPower;
+      boss.onGround=false;
+      boss.vx=towardPlayer*(phase3?345:phase2?285:220);
+      boss.jumpCooldown=jumpInterval+Math.random()*.18;
+
+      msgEl.textContent=
+        phase3
+        ? "⚠️ 쿠퍼왕 광폭 추적 점프!"
+        : "⚠️ 쿠퍼왕 추적 점프!";
+    }
+
+    /*
+      고속 돌진
+    */
+    if(boss.onGround && boss.dashCooldown<=0){
+      boss.vx=towardPlayer*(phase3?465:phase2?360:305);
+      boss.dashCooldown=phase3?.95:phase2?1.45:2.05;
+      msgEl.textContent="💨 쿠퍼왕 고속 돌진!";
+    }
+
+    boss.vy+=GRAVITY*.93*dt;
+    boss.x+=boss.vx*dt;
+    boss.y+=boss.vy*dt;
+
+    const bossGroundY=352-boss.h;
+
+    if(boss.y>=bossGroundY){
+      boss.y=bossGroundY;
+
+      /*
+        3페이즈 착지 충격파
+      */
+      if(phase3 && boss.vy>320){
+        bossFireballs.push({
+          x:boss.x+boss.w/2,y:337,vx:-320,vy:-70,r:8,life:2.1,dead:false
+        });
+        bossFireballs.push({
+          x:boss.x+boss.w/2,y:337,vx:320,vy:-70,r:8,life:2.1,dead:false
+        });
+      }
+
+      boss.vy=0;
+      boss.onGround=true;
+    }
+
+    if(boss.x<boss.minX){
+      boss.x=boss.minX;
+      boss.vx=Math.abs(boss.vx);
+    }
+
+    if(boss.x+boss.w>boss.maxX){
+      boss.x=boss.maxX-boss.w;
+      boss.vx=-Math.abs(boss.vx);
+    }
+
+    /*
+      기본 불꽃
+    */
+    if(boss.shootCooldown<=0){
+      const direction=player.x<boss.x?-1:1;
+
+      bossFireballs.push({
+        x:boss.x+boss.w/2,
+        y:boss.y+28,
+        vx:direction*(phase3?405:phase2?345:285),
+        vy:boss.onGround?-130:-35,
+        r:9,
+        life:4,
+        dead:false
+      });
+
+      boss.shootCooldown=fireInterval;
+    }
+
+    /*
+      2페이즈 이상: 다중 불꽃
+    */
+    if(phase2 && boss.burstCooldown<=0){
+      const direction=player.x<boss.x?-1:1;
+      const shots=
+        phase3
+        ? [-250,-185,-120,-55,15]
+        : [-190,-105,-30];
+
+      shots.forEach((vy,idx)=>{
+        bossFireballs.push({
+          x:boss.x+boss.w/2,
+          y:boss.y+24,
+          vx:direction*(275+idx*32),
+          vy,
+          r:8,
+          life:4,
+          dead:false
+        });
+      });
+
+      boss.burstCooldown=phase3?1.25:2.05;
+      msgEl.textContent=
+        phase3
+        ? "🔥 쿠퍼왕 5방향 광폭 불꽃!"
+        : "🔥 쿠퍼왕 3방향 연속 불꽃!";
+    }
+
+    /*
+      2페이즈 이상: 운석 낙하
+    */
+    if(phase2 && boss.meteorCooldown<=0){
+      spawnMeteor(player.x+player.w/2,0);
+      spawnMeteor(player.x-75,.20);
+      spawnMeteor(player.x+95,.38);
+
+      if(phase3){
+        spawnMeteor(player.x-150,.55);
+        spawnMeteor(player.x+165,.72);
+      }
+
+      boss.meteorCooldown=phase3?2.35:3.25;
+      msgEl.textContent=
+        phase3
+        ? "☄️ 쿠퍼왕 5연속 운석! 계속 움직이세요!"
+        : "☄️ 쿠퍼왕 운석 낙하!";
+    }
+
+    /*
+      2페이즈 이상: 추적 불꽃
+    */
+    if(phase2 && boss.homingCooldown<=0){
+      spawnHomingOrb();
+
+      if(phase3){
+        setTimeout(()=>{
+          if(boss.alive && boss.active) spawnHomingOrb();
+        },260);
+      }
+
+      boss.homingCooldown=phase3?2.15:3.0;
+      msgEl.textContent="🔴 쿠퍼왕 추적 불꽃! 크게 이동해서 피하세요!";
+    }
+
+    /*
+      3페이즈: 화염 기둥 4~5개
+    */
+    if(phase3 && boss.pillarCooldown<=0){
+      const arenaStart=boss.minX+45;
+      const arenaEnd=boss.maxX-55;
+      const span=arenaEnd-arenaStart;
+
+      for(let i=0;i<5;i++){
+        spawnFlamePillar(
+          arenaStart+(span/4)*i,
+          i*.16
         );
       }
 
-      function keysGot() {
-        return keys.filter(k => k.taken).length;
-      }
-
-      function coinsGot() {
-        return coins.filter(c => c.taken).length;
-      }
-
-      function powerLabel() {
-        if (player.power === "big") return "버섯";
-        if (player.power === "fire") return "불꽃";
-        return "기본";
-      }
-
-      function updateHUD() {
-        scoreEl.textContent = String(score).padStart(4, "0");
-        coinEl.textContent = `${coinsGot()}/12`;
-        keyEl.textContent = `${keysGot()}/3`;
-        lifeEl.textContent = String(Math.max(0, lives));
-        timeEl.textContent = String(Math.max(0, Math.ceil(timeLeft)));
-        powerEl.textContent = powerLabel();
-      }
-
-      function spark(x, y, color, count = 10) {
-        for (let i = 0; i < count; i++) {
-          particles.push({
-            x,
-            y,
-            vx: (Math.random() - 0.5) * 140,
-            vy: -40 - Math.random() * 140,
-            life: 0.6 + Math.random() * 0.4,
-            color
-          });
-        }
-      }
-
-      function resetPlayer() {
-        player.x = player.respawnX;
-        player.y = player.respawnY;
-        player.vx = 0;
-        player.vy = 0;
-        player.inv = 1.4;
-        player.fireCooldown = 0;
-        cameraX = Math.max(0, player.x - 250);
-      }
-
-      function restart() {
-        score = 0;
-        lives = 3;
-        timeLeft = 95;
-        paused = false;
-        gameOver = false;
-        clear = false;
-        checkpoint = false;
-        cameraX = 0;
-        particles = [];
-        fireballs = [];
-
-        player.respawnX = 70;
-        player.respawnY = 280;
-        player.power = "normal";
-
-        coins.forEach(c => c.taken = false);
-        keys.forEach(k => k.taken = false);
-        mushrooms.forEach(m => m.taken = false);
-        flowers.forEach(f => f.taken = false);
-
-        enemies.forEach((e, i) => Object.assign(e, enemyBase[i]));
-        movers[0].x = 535;
-        movers[1].x = 1518;
-        movers[2].x = 2610;
-
-        resetPlayer();
-        pauseBtn.textContent = "⏸ 일시정지";
-        msgEl.textContent = "🔑 열쇠 3개를 모으고 금고 게이트까지 이동하세요.";
-        updateHUD();
-        canvas.focus();
-      }
-
-      function losePowerOrLife(reason) {
-        if (player.inv > 0 || gameOver || clear) return;
-
-        if (player.power === "fire") {
-          player.power = "big";
-          player.inv = 1.5;
-          player.vx = -80 * player.face;
-          msgEl.textContent = "🔥 불꽃 능력이 해제되었습니다!";
-          updateHUD();
-          return;
-        }
-
-        if (player.power === "big") {
-          player.power = "normal";
-          player.inv = 1.5;
-          player.vx = -80 * player.face;
-          msgEl.textContent = "🍄 강화 상태가 해제되었습니다!";
-          updateHUD();
-          return;
-        }
-
-        lives--;
-        updateHUD();
-
-        if (lives <= 0) {
-          gameOver = true;
-          msgEl.textContent = `💥 GAME OVER · ${reason}`;
-          return;
-        }
-
-        msgEl.textContent = `💥 ${reason} 체크포인트에서 다시 시작합니다.`;
-        resetPlayer();
-      }
-
-      function shootFireball() {
-        if (player.power !== "fire") {
-          msgEl.textContent = "🔥 불꽃 아이템을 먼저 획득해야 합니다.";
-          return;
-        }
-
-        if (paused || gameOver || clear) return;
-        if (player.fireCooldown > 0) return;
-
-        player.fireCooldown = 0.32;
-
-        fireballs.push({
-          x: player.x + player.w / 2,
-          y: player.y + 22,
-          vx: player.face * 360,
-          vy: -40,
-          r: 7,
-          life: 2.0,
-          dead: false
-        });
-
-        spark(player.x + 18, player.y + 20, "#ff943a", 8);
-      }
-
-      function updateMover(m, dt) {
-        const before = m.x;
-        m.x += m.v * dt;
-
-        if (m.x < m.min) {
-          m.x = m.min;
-          m.v = Math.abs(m.v);
-        }
-
-        if (m.x > m.max) {
-          m.x = m.max;
-          m.v = -Math.abs(m.v);
-        }
-
-        m.dx = m.x - before;
-      }
-
-      function update(dt) {
-        if (paused || gameOver || clear) return;
-
-        timeLeft -= dt;
-        if (timeLeft <= 0) {
-          timeLeft = 0;
-          gameOver = true;
-          updateHUD();
-          msgEl.textContent = "⏱ TIME OVER · 제한시간을 초과했습니다.";
-          return;
-        }
-
-        if (player.inv > 0) player.inv -= dt;
-        if (player.fireCooldown > 0) player.fireCooldown -= dt;
-
-        movers.forEach(m => updateMover(m, dt));
-
-        enemies.forEach(e => {
-          if (!e.alive) return;
-          e.x += e.v * dt;
-          if (e.x < e.min) {
-            e.x = e.min;
-            e.v = Math.abs(e.v);
-          }
-          if (e.x > e.max) {
-            e.x = e.max;
-            e.v = -Math.abs(e.v);
-          }
-        });
-
-        if (input.left) {
-          player.vx = -player.speed;
-          player.face = -1;
-        } else if (input.right) {
-          player.vx = player.speed;
-          player.face = 1;
-        } else {
-          player.vx = 0;
-        }
-
-        if (input.jump && player.onGround) {
-          player.vy = -player.jump;
-          player.onGround = false;
-          spark(player.x + 17, player.y + 45, "#ffffff", 4);
-        }
-
-        input.jump = false;
-
-        player.vy += GRAVITY * dt;
-        const prevY = player.y;
-
-        player.x += player.vx * dt;
-        player.x = Math.max(0, Math.min(WORLD - player.w, player.x));
-        player.y += player.vy * dt;
-        player.onGround = false;
-
-        const allPlatforms = [...grounds, ...platforms, ...movers];
-
-        for (const p of allPlatforms) {
-          if (player.x + player.w > p.x && player.x < p.x + p.w) {
-            const prevBottom = prevY + player.h;
-            const nowBottom = player.y + player.h;
-
-            if (player.vy >= 0 && prevBottom <= p.y + 6 && nowBottom >= p.y) {
-              player.y = p.y - player.h;
-              player.vy = 0;
-              player.onGround = true;
-
-              if ("dx" in p) {
-                player.x += p.dx;
-              }
-            }
-          }
-        }
-
-        if (player.y > H + 60) {
-          losePowerOrLife("낭떠러지에 떨어졌습니다.");
-          return;
-        }
-
-        for (const s of spikes) {
-          if (rect(player, s)) {
-            losePowerOrLife("가시에 닿았습니다.");
-            return;
-          }
-        }
-
-        for (const c of coins) {
-          if (!c.taken && rect(player, { x: c.x - 11, y: c.y - 11, w: 22, h: 22 })) {
-            c.taken = true;
-            score += 100;
-            spark(c.x, c.y, "#ffd84f", 10);
-            msgEl.textContent = "🪙 MG코인 획득! +100점";
-            updateHUD();
-          }
-        }
-
-        for (const k of keys) {
-          if (!k.taken && rect(player, { x: k.x - 14, y: k.y - 14, w: 28, h: 28 })) {
-            k.taken = true;
-            score += 500;
-            spark(k.x, k.y, "#44c982", 14);
-            msgEl.textContent = `🔑 MG 열쇠 획득! ${keysGot()}/3`;
-            updateHUD();
-          }
-        }
-
-        for (const m of mushrooms) {
-          if (!m.taken && rect(player, { x: m.x - 14, y: m.y - 14, w: 28, h: 28 })) {
-            m.taken = true;
-
-            if (player.power === "normal") {
-              player.power = "big";
-              score += 300;
-              msgEl.textContent = "🍄 버섯 획득! 강화 상태가 되었습니다.";
-            } else {
-              score += 150;
-              msgEl.textContent = "🍄 버섯 획득! 보너스 점수 +150";
-            }
-
-            spark(m.x, m.y, "#ff5a5a", 12);
-            updateHUD();
-          }
-        }
-
-        for (const f of flowers) {
-          if (!f.taken && rect(player, { x: f.x - 14, y: f.y - 14, w: 28, h: 28 })) {
-            f.taken = true;
-            player.power = "fire";
-            score += 500;
-            spark(f.x, f.y, "#ff9738", 16);
-            msgEl.textContent = "🔥 불꽃 아이템 획득! 이제 불꽃을 발사할 수 있습니다.";
-            updateHUD();
-          }
-        }
-
-        for (const e of enemies) {
-          if (!e.alive) continue;
-
-          if (rect(player, e)) {
-            const stomp = player.vy > 100 && (player.y + player.h - e.y) < 19;
-
-            if (stomp) {
-              e.alive = false;
-              player.vy = -340;
-              score += 250;
-              spark(e.x + 16, e.y + 10, "#ff7c7c", 12);
-              msgEl.textContent = "✨ 적을 밟아 처치! +250점";
-              updateHUD();
-            } else {
-              losePowerOrLife("적과 충돌했습니다.");
-              return;
-            }
-          }
-        }
-
-        if (!checkpoint && player.x > checkpointPole.x) {
-          checkpoint = true;
-          player.respawnX = 1540;
-          player.respawnY = 280;
-          score += 300;
-          spark(checkpointPole.x, 255, "#5bd48c", 18);
-          msgEl.textContent = "✅ CHECKPOINT! 이제 여기서 다시 시작합니다.";
-          updateHUD();
-        }
-
-        if (input.fire) {
-          shootFireball();
-        }
-        input.fire = false;
-
-        fireballs.forEach(fb => {
-          fb.x += fb.vx * dt;
-          fb.y += fb.vy * dt;
-          fb.vy += 220 * dt;
-          fb.life -= dt;
-
-          const onGround = grounds.some(g =>
-            fb.x > g.x && fb.x < g.x + g.w && fb.y + fb.r >= g.y && fb.y + fb.r <= g.y + 12
-          );
-
-          if (onGround) {
-            fb.vy = -Math.abs(fb.vy) * 0.55;
-          }
-
-          for (const e of enemies) {
-            if (!e.alive || fb.dead) continue;
-
-            const hit =
-              fb.x + fb.r > e.x &&
-              fb.x - fb.r < e.x + e.w &&
-              fb.y + fb.r > e.y &&
-              fb.y - fb.r < e.y + e.h;
-
-            if (hit) {
-              e.alive = false;
-              fb.dead = true;
-              score += 300;
-              spark(e.x + 16, e.y + 10, "#ff943a", 14);
-              msgEl.textContent = "🔥 불꽃으로 적 처치! +300점";
-              updateHUD();
-            }
-          }
-
-          if (fb.life <= 0 || fb.x < 0 || fb.x > WORLD || fb.y > H + 60) {
-            fb.dead = true;
-          }
-        });
-
-        fireballs = fireballs.filter(fb => !fb.dead);
-
-        if (player.x + player.w > gate.x - 8) {
-          if (keysGot() === 3) {
-            clear = true;
-            score += 1500 + Math.ceil(timeLeft) * 10;
-            spark(gate.x, 250, "#ffd96a", 30);
-            msgEl.textContent = "🏆 STAGE CLEAR! 황금 금고 게이트가 열렸습니다!";
-            updateHUD();
-          } else {
-            player.x = gate.x - player.w - 10;
-            player.vx = 0;
-            msgEl.textContent = `🔒 금고가 잠겨 있습니다. 열쇠가 ${3 - keysGot()}개 더 필요합니다.`;
-          }
-        }
-
-        particles.forEach(p => {
-          p.x += p.vx * dt;
-          p.y += p.vy * dt;
-          p.vy += 240 * dt;
-          p.life -= dt;
-        });
-
-        particles = particles.filter(p => p.life > 0);
-
-        const target = player.x - W * 0.38;
-        cameraX += (target - cameraX) * Math.min(1, dt * 7);
-        cameraX = Math.max(0, Math.min(WORLD - W, cameraX));
-
-        updateHUD();
-      }
-
-      function r(x, y, w, h, color) {
-        ctx.fillStyle = color;
-        ctx.fillRect(Math.round(x - cameraX), Math.round(y), Math.round(w), Math.round(h));
-      }
-
-      function drawBackground() {
-        const grad = ctx.createLinearGradient(0, 0, 0, H);
-        grad.addColorStop(0, "#79c7ff");
-        grad.addColorStop(0.55, "#bce8ff");
-        grad.addColorStop(1, "#e9f6ff");
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, W, H);
-
-        ctx.fillStyle = "rgba(255,232,156,.92)";
-        ctx.beginPath();
-        ctx.arc(690, 70, 34, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "rgba(255,255,255,.92)";
-        [[100, 72], [410, 105], [720, 130]].forEach(([x, y]) => {
-          const shift = (cameraX * 0.12) % 900;
-          let xx = x - shift;
-          if (xx < -100) xx += 900;
-          ctx.fillRect(xx, y, 72, 17);
-          ctx.fillRect(xx + 14, y - 12, 30, 17);
-          ctx.fillRect(xx + 42, y - 8, 25, 15);
-        });
-
-        ctx.fillStyle = "#93c8a4";
-        for (let x = -100; x < W + 200; x += 210) {
-          ctx.beginPath();
-          ctx.moveTo(x, 352);
-          ctx.lineTo(x + 100, 250);
-          ctx.lineTo(x + 200, 352);
-          ctx.fill();
-        }
-
-        ctx.fillStyle = "#6faf83";
-        for (let x = -50; x < W + 220; x += 250) {
-          ctx.beginPath();
-          ctx.moveTo(x, 352);
-          ctx.lineTo(x + 120, 286);
-          ctx.lineTo(x + 240, 352);
-          ctx.fill();
-        }
-
-        for (let x = 50; x < W + 150; x += 210) {
-          ctx.fillStyle = "#557b62";
-          ctx.fillRect(x, 320, 8, 32);
-          ctx.fillStyle = "#65b779";
-          ctx.beginPath();
-          ctx.arc(x + 4, 310, 22, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      function drawPlatform(p, moving = false) {
-        r(p.x, p.y, p.w, p.h, moving ? "#5f83b3" : "#b76c48");
-        r(p.x, p.y, p.w, 6, moving ? "#a9c9ef" : "#f1b56e");
-
-        if (!moving) {
-          for (let x = p.x; x < p.x + p.w; x += 24) {
-            r(x, p.y + 8, 22, 9, "#9f5b3f");
-          }
-        }
-      }
-
-      function drawSpike(s) {
-        const sx = s.x - cameraX;
-        ctx.fillStyle = "#d5dde6";
-        for (let x = 0; x < s.w; x += 18) {
-          ctx.beginPath();
-          ctx.moveTo(sx + x, s.y + s.h);
-          ctx.lineTo(sx + x + 9, s.y);
-          ctx.lineTo(sx + x + 18, s.y + s.h);
-          ctx.fill();
-        }
-      }
-
-      function drawCoin(c) {
-        if (c.taken) return;
-        const x = c.x - cameraX;
-        const y = c.y;
-
-        ctx.fillStyle = "#ffe36d";
-        ctx.beginPath();
-        ctx.arc(x, y, 12, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "#e7a900";
-        ctx.beginPath();
-        ctx.arc(x, y, 7, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "#fff7bf";
-        ctx.font = "bold 7px monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("MG", x, y + 2);
-      }
-
-      function drawKey(k) {
-        if (k.taken) return;
-        const x = k.x - cameraX;
-        const y = k.y;
-
-        ctx.fillStyle = "#3cc17f";
-        ctx.beginPath();
-        ctx.arc(x, y, 12, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillRect(x + 8, y - 4, 18, 8);
-        ctx.fillRect(x + 20, y + 3, 5, 8);
-
-        ctx.fillStyle = "#dffbea";
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      function drawMushroom(m) {
-        if (m.taken) return;
-        const x = m.x - cameraX;
-        const y = m.y;
-
-        ctx.fillStyle = "#ff5959";
-        ctx.beginPath();
-        ctx.arc(x, y, 14, Math.PI, 0);
-        ctx.fill();
-
-        ctx.fillStyle = "#fff";
-        ctx.beginPath();
-        ctx.arc(x - 6, y - 5, 3, 0, Math.PI * 2);
-        ctx.arc(x + 6, y - 4, 3, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = "#f7e7cf";
-        ctx.fillRect(x - 8, y, 16, 13);
-
-        ctx.fillStyle = "#333";
-        ctx.fillRect(x - 4, y + 4, 2, 3);
-        ctx.fillRect(x + 2, y + 4, 2, 3);
-      }
-
-      function drawFlower(f) {
-        if (f.taken) return;
-        const x = f.x - cameraX;
-        const y = f.y;
-
-        ctx.fillStyle = "#39b96d";
-        ctx.fillRect(x - 2, y + 6, 4, 16);
-
-        ctx.fillStyle = "#ff8f36";
-        for (let i = 0; i < 6; i++) {
-          const angle = (Math.PI * 2 / 6) * i;
-          ctx.beginPath();
-          ctx.arc(x + Math.cos(angle) * 10, y, 6, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        ctx.fillStyle = "#ffe36d";
-        ctx.beginPath();
-        ctx.arc(x, y, 6, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      function drawEnemy(e) {
-        if (!e.alive) return;
-        const x = e.x - cameraX;
-        const y = e.y;
-
-        ctx.fillStyle = "#f26e6e";
-        ctx.beginPath();
-        ctx.arc(x + 16, y + 15, 15, Math.PI, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillRect(x + 1, y + 15, 30, 16);
-
-        ctx.fillStyle = "#fff";
-        ctx.fillRect(x + 6, y + 13, 7, 7);
-        ctx.fillRect(x + 19, y + 13, 7, 7);
-
-        ctx.fillStyle = "#222";
-        ctx.fillRect(x + 9, y + 15, 2, 3);
-        ctx.fillRect(x + 22, y + 15, 2, 3);
-
-        ctx.fillStyle = "#934848";
-        ctx.fillRect(x + 4, y + 30, 9, 4);
-        ctx.fillRect(x + 19, y + 30, 9, 4);
-      }
-
-      function drawCheckpoint() {
-        const x = checkpointPole.x - cameraX;
-        r(checkpointPole.x, 235, 5, 117, "#6c4b36");
-
-        ctx.fillStyle = checkpoint ? "#45c983" : "#d1d6dd";
-        ctx.fillRect(x + 5, 240, 55, 27);
-
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 9px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(checkpoint ? "SAVE!" : "CHECK", x + 32, 257);
-      }
-
-      function drawGate() {
-        const x = gate.x - cameraX;
-        ctx.fillStyle = "#805d3d";
-        ctx.fillRect(x - 8, 198, 42, 154);
-
-        ctx.fillStyle = keysGot() === 3 ? "#e8be4d" : "#5d6673";
-        ctx.fillRect(x, 208, 26, 144);
-
-        ctx.fillStyle = keysGot() === 3 ? "#fff0a5" : "#b8bec7";
-        ctx.fillRect(x + 6, 225, 14, 110);
-
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 8px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(keysGot() === 3 ? "OPEN" : "LOCK", x + 13, 274);
-      }
-
-      function drawFireballs() {
-        fireballs.forEach(fb => {
-          const x = fb.x - cameraX;
-          const y = fb.y;
-
-          ctx.fillStyle = "#ff8e3c";
-          ctx.beginPath();
-          ctx.arc(x, y, fb.r, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = "#ffd36d";
-          ctx.beginPath();
-          ctx.arc(x, y, fb.r - 3, 0, Math.PI * 2);
-          ctx.fill();
-        });
-      }
-
-      function drawParticles() {
-        for (const p of particles) {
-          ctx.globalAlpha = Math.max(0, p.life);
-          ctx.fillStyle = p.color;
-          ctx.fillRect(p.x - cameraX, p.y, 4, 4);
-        }
-        ctx.globalAlpha = 1;
-      }
-
-      function drawPlayer() {
-        const x = player.x - cameraX;
-        const y = player.y;
-
-        if (player.inv > 0 && Math.floor(player.inv * 10) % 2 === 0) return;
-
-        ctx.fillStyle = "rgba(0,0,0,.15)";
-        ctx.beginPath();
-        ctx.ellipse(x + 17, y + 48, 16, 4, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        let bodyColor = "#2b78c8";
-        let trimColor = "#176ab6";
-
-        if (player.power === "big") {
-          bodyColor = "#30a46c";
-          trimColor = "#248153";
-        }
-
-        if (player.power === "fire") {
-          bodyColor = "#ff8e3c";
-          trimColor = "#d96b17";
-        }
-
-        ctx.fillStyle = bodyColor;
-        ctx.beginPath();
-        ctx.roundRect(x + 3, y + 3, 28, 37, 9);
-        ctx.fill();
-
-        ctx.fillStyle = "#fff";
-        ctx.beginPath();
-        ctx.roundRect(x + 6, y + 7, 22, 23, 7);
-        ctx.fill();
-
-        ctx.fillStyle = "#f2bc56";
-        ctx.fillRect(x + 5, y, 6, 8);
-        ctx.fillRect(x + 23, y, 6, 8);
-
-        ctx.fillStyle = "#252525";
-        ctx.fillRect(x + 10, y + 15, 3, 4);
-        ctx.fillRect(x + 21, y + 15, 3, 4);
-
-        ctx.fillStyle = "#f2a9ad";
-        ctx.fillRect(x + 7, y + 21, 4, 3);
-        ctx.fillRect(x + 23, y + 21, 4, 3);
-
-        ctx.strokeStyle = "#333";
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(x + 17, y + 20, 5, 0.2, Math.PI - 0.2);
-        ctx.stroke();
-
-        ctx.fillStyle = trimColor;
-        ctx.fillRect(x + 7, y + 34, 20, 11);
-
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 7px monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("MG", x + 17, y + 42);
-
-        if (player.power === "fire") {
-          ctx.fillStyle = "#ffd36d";
-          ctx.beginPath();
-          ctx.arc(x + 30, y + 10, 4, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 9px sans-serif";
-        ctx.fillText("김금고", x + 17, y - 7);
-      }
-
-      function drawOverlay() {
-        if (!paused && !gameOver && !clear) return;
-
-        ctx.fillStyle = "rgba(16,24,40,.55)";
-        ctx.fillRect(0, 0, W, H);
-
-        ctx.fillStyle = "#fff";
-        ctx.textAlign = "center";
-        ctx.font = "bold 34px monospace";
-        ctx.fillText(
-          paused ? "PAUSE" : clear ? "STAGE CLEAR!" : "GAME OVER",
-          W / 2,
-          H / 2 - 8
-        );
-
-        ctx.font = "bold 15px sans-serif";
-        ctx.fillText(
-          clear
-            ? "김금고의 금고 탈출 성공! ✨"
-            : gameOver
-            ? "처음부터 다시 도전하세요."
-            : "잠시 쉬어가세요.",
-          W / 2,
-          H / 2 + 25
+      boss.pillarCooldown=3.4;
+      msgEl.textContent="🔥🔥 쿠퍼왕 화염 기둥! 빈 공간을 찾아 피하세요!";
+    }
+
+    if(rect(player,boss)){
+      const stomp=
+        player.vy>135 &&
+        (player.y+player.h-boss.y)<24;
+
+      if(stomp){
+        player.y=boss.y-player.h-3;
+        player.vy=-500;
+        damageBoss(2);
+      }else{
+        losePowerOrLife(
+          boss.vy>200
+          ? "쿠퍼왕의 점프 내려찍기에 맞았습니다."
+          : "쿠퍼왕의 돌진에 맞았습니다."
         );
       }
+    }
+  }
 
-      function render() {
-        drawBackground();
-        grounds.forEach(p => drawPlatform(p));
-        platforms.forEach(p => drawPlatform(p));
-        movers.forEach(p => drawPlatform(p, true));
-        spikes.forEach(drawSpike);
-        coins.forEach(drawCoin);
-        keys.forEach(drawKey);
-        mushrooms.forEach(drawMushroom);
-        flowers.forEach(drawFlower);
-        enemies.forEach(drawEnemy);
-        drawCheckpoint();
-        drawGate();
-        drawFireballs();
-        drawParticles();
-        drawPlayer();
-        drawOverlay();
+  function updateBossFireballs(dt){
+    bossFireballs.forEach(fire=>{
+      fire.x += fire.vx*dt;
+      fire.y += fire.vy*dt;
+      fire.vy += 300*dt;
+      fire.life -= dt;
+
+      const floorHit = grounds.find(g =>
+        fire.x>g.x && fire.x<g.x+g.w &&
+        fire.y+fire.r>=g.y && fire.y+fire.r<=g.y+18 &&
+        fire.vy>0
+      );
+
+      if(floorHit){
+        fire.y=floorHit.y-fire.r-1;
+        fire.vy=-230;
       }
 
-      function loop(t) {
-        const dt = Math.min(0.033, ((t - last) / 1000) || 0);
-        last = t;
-        update(dt);
-        render();
-        requestAnimationFrame(loop);
+      const hitPlayer =
+        fire.x+fire.r>player.x &&
+        fire.x-fire.r<player.x+player.w &&
+        fire.y+fire.r>player.y &&
+        fire.y-fire.r<player.y+player.h;
+
+      if(hitPlayer){
+        fire.dead=true;
+        losePowerOrLife("쿠퍼왕의 불꽃에 맞았습니다.");
       }
 
-      function activeKey() {
-        const a = document.activeElement;
-        return a === canvas || document.body.contains(a);
+      if(fire.life<=0 || fire.x<0 || fire.x>WORLD || fire.y>H+100) fire.dead=true;
+    });
+
+    bossFireballs = bossFireballs.filter(f=>!f.dead);
+  }
+
+  function update(dt){
+    if(paused || gameOver || clear) return;
+
+    timeLeft-=dt;
+    if(timeLeft<=0){
+      timeLeft=0;
+      gameOver=true;
+      msgEl.textContent="⏱ TIME OVER · 제한시간을 초과했습니다.";
+      hud();
+      return;
+    }
+
+    if(player.inv>0) player.inv-=dt;
+    if(player.fireCooldown>0) player.fireCooldown-=dt;
+
+    movers.forEach(m=>updateMover(m,dt));
+
+    enemies.forEach(e=>{
+      if(!e.alive)return;
+      e.x+=e.v*dt;
+      if(e.x<e.min){e.x=e.min;e.v=Math.abs(e.v);}
+      if(e.x>e.max){e.x=e.max;e.v=-Math.abs(e.v);}
+    });
+
+    if(input.left){
+      player.vx=-player.speed;
+      player.face=-1;
+    }else if(input.right){
+      player.vx=player.speed;
+      player.face=1;
+    }else{
+      player.vx=0;
+    }
+
+    if(input.jump){
+      if(player.onGround){
+        player.vy = -((player.power==="raccoon" || player.power==="raccoonFire") ? 610 : player.jump);
+        player.onGround=false;
+        player.jumpCount=1;
+        player.gliding=false;
+        spark(player.x+17,player.y+45,"#ffffff",4);
+      }else if(player.jumpCount < player.maxJumps){
+        player.vy = -((player.power==="raccoon" || player.power==="raccoonFire") ? 560 : 500);
+        player.jumpCount++;
+        player.gliding = (player.power==="raccoon" || player.power==="raccoonFire");
+        spark(
+          player.x+17,
+          player.y+35,
+          (player.power==="raccoon" || player.power==="raccoonFire") ? "#d8b56c" : "#dff3ff",
+          7
+        );
+        msgEl.textContent =
+          (player.power==="raccoon" || player.power==="raccoonFire")
+          ? "🦝 너구리 2단 점프! 공중에서 활공합니다."
+          : "✨ 2단 점프!";
       }
+    }
+    input.jump=false;
 
-      document.addEventListener("keydown", (e) => {
-        if (!activeKey()) return;
+    if(input.fire){
+      shootFireball();
+      input.fire=false;
+    }
 
-        if (["ArrowLeft","ArrowRight","ArrowUp"," ","a","A","d","D","w","W","f","F","x","X"].includes(e.key)) {
-          e.preventDefault();
+    /*
+      너구리 변신 상태에서 낙하 중이면 활공
+      낙하속도를 제한해 더 멀리 이동할 수 있음
+    */
+    const gravityScale =
+      ((player.power==="raccoon" || player.power==="raccoonFire") && player.gliding && player.vy>0)
+      ? 0.32
+      : 1;
+
+    player.vy += GRAVITY*gravityScale*dt;
+
+    if(
+      (player.power==="raccoon" || player.power==="raccoonFire") &&
+      player.gliding &&
+      player.vy>145
+    ){
+      player.vy=145;
+    }
+
+    const prevY=player.y;
+
+    player.x += player.vx*dt;
+    player.x = Math.max(0,Math.min(WORLD-player.w,player.x));
+
+    player.y += player.vy*dt;
+    player.onGround=false;
+
+    const allPlatforms=[...grounds,...platforms,...movers];
+
+    for(const p of allPlatforms){
+      if(player.x+player.w>p.x && player.x<p.x+p.w){
+        const prevBottom=prevY+player.h;
+        const nowBottom=player.y+player.h;
+        if(player.vy>=0 && prevBottom<=p.y+7 && nowBottom>=p.y){
+          player.y=p.y-player.h;
+          player.vy=0;
+          player.onGround=true;
+          player.jumpCount=0;
+          player.gliding=false;
+          if("dx" in p) player.x+=p.dx;
+        }
+      }
+    }
+
+    if(player.y>H+60){
+      losePowerOrLife("낭떠러지에 떨어졌습니다.");
+      return;
+    }
+
+    for(const s of spikes){
+      if(rect(player,s)){
+        losePowerOrLife("가시에 닿았습니다.");
+        return;
+      }
+    }
+
+    for(const c of coins){
+      if(!c.taken && rect(player,{x:c.x-11,y:c.y-11,w:22,h:22})){
+        c.taken=true;
+        score+=100;
+        spark(c.x,c.y,"#ffd84f",10);
+        msgEl.textContent="🪙 MG코인 획득! +100점";
+        hud();
+      }
+    }
+
+    for(const k of keys){
+      if(!k.taken && rect(player,{x:k.x-14,y:k.y-14,w:28,h:28})){
+        k.taken=true;
+        score+=500;
+        spark(k.x,k.y,"#44c982",14);
+        msgEl.textContent=`🔑 MG 열쇠 획득! ${keysGot()}/3`;
+        hud();
+      }
+    }
+
+    for(const m of mushrooms){
+      if(!m.taken && rect(player,{x:m.x-14,y:m.y-14,w:28,h:28})){
+        m.taken=true;
+        if(player.power==="normal"){
+          player.power="big";
+          score+=300;
+          msgEl.textContent="🍄 강화 버섯 획득! 한 번 더 버틸 수 있습니다.";
+        }else{
+          score+=150;
+          msgEl.textContent="🍄 강화 버섯 획득! 보너스 +150점";
+        }
+        spark(m.x,m.y,"#ff5a5a",12);
+        hud();
+      }
+    }
+
+    for(const f of flowers){
+      if(!f.taken && rect(player,{x:f.x-14,y:f.y-14,w:28,h:28})){
+        f.taken=true;
+
+        if(player.power==="raccoon" || player.power==="raccoonFire"){
+          player.power="raccoonFire";
+          msgEl.textContent="🍃🔥 불꽃 아이템 획득! 너구리 변신 + 불꽃 능력이 동시에 적용됩니다!";
+        }else{
+          player.power="fire";
+          msgEl.textContent="🔥 불꽃 아이템 획득! F / X 키로 발사할 수 있습니다.";
         }
 
-        if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") input.left = true;
-        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") input.right = true;
-        if (e.key === "ArrowUp" || e.key === "w" || e.key === "W" || e.key === " ") input.jump = true;
-        if (e.key === "f" || e.key === "F" || e.key === "x" || e.key === "X") input.fire = true;
-      });
+        score+=500;
+        spark(f.x,f.y,"#ff9738",16);
+        hud();
+      }
+    }
 
-      document.addEventListener("keyup", (e) => {
-        if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") input.left = false;
-        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") input.right = false;
-      });
+    for(const l of leaves){
+      if(!l.taken && rect(player,{x:l.x-15,y:l.y-15,w:30,h:30})){
+        l.taken=true;
 
-      function hold(buttonId, key) {
-        const el = document.getElementById(buttonId);
-        const on = () => {
-          input[key] = true;
-          canvas.focus();
-        };
-        const off = () => {
-          if (key !== "jump" && key !== "fire") input[key] = false;
-        };
+        if(player.power==="fire" || player.power==="raccoonFire"){
+          player.power="raccoonFire";
+          msgEl.textContent="🍃🔥 나뭇잎 획득! 너구리 변신 + 불꽃 능력이 동시에 적용됩니다!";
+        }else{
+          player.power="raccoon";
+          msgEl.textContent="🍃 나뭇잎 획득! 날으는 너구리 김금고로 변신했습니다!";
+        }
 
-        el.addEventListener("pointerdown", on);
-        el.addEventListener("pointerup", off);
-        el.addEventListener("pointercancel", off);
-        el.addEventListener("pointerleave", off);
+        player.gliding=false;
+        score+=700;
+        spark(l.x,l.y,"#d5b16b",18);
+        hud();
+      }
+    }
+
+    for(const e of enemies){
+      if(!e.alive) continue;
+      if(rect(player,e)){
+        const stomp=player.vy>100 && (player.y+player.h-e.y)<19;
+        if(stomp){
+          e.alive=false;
+          player.vy=-340;
+          score+=250;
+          spark(e.x+16,e.y+10,"#ff7c7c",12);
+          msgEl.textContent="✨ 적을 밟아 처치! +250점";
+          hud();
+        }else{
+          losePowerOrLife("적과 충돌했습니다.");
+          return;
+        }
+      }
+    }
+
+    if(!checkpoint && player.x>checkpointPole.x){
+      checkpoint=true;
+      // 안전한 지면 위에서 부활하도록 수정
+      player.respawnX=1660;
+      player.respawnY=304;
+      score+=300;
+      spark(checkpointPole.x,255,"#5bd48c",18);
+      msgEl.textContent="✅ CHECKPOINT! 이제 안전한 지점에서 다시 시작합니다.";
+      hud();
+    }
+
+    updateMidBoss(dt);
+    updateBoomerangs(dt);
+
+    updateBoarBoss(dt);
+    updateBoarShockwaves(dt);
+
+    updateBatBoss(dt);
+    updateWindOrbs(dt);
+
+    updateCrabBoss(dt);
+    updateCrabBalls(dt);
+
+    updatePlayerFireballs(dt);
+
+    updateBoss(dt);
+    updateBossFireballs(dt);
+    updateBossMeteors(dt);
+    updateFlamePillars(dt);
+    updateHomingOrbs(dt);
+
+    if(player.x+player.w>gate.x-8){
+      if(keysGot()<3){
+        player.x=gate.x-player.w-10;
+        player.vx=0;
+        msgEl.textContent=`🔒 MG 열쇠가 ${3-keysGot()}개 더 필요합니다.`;
+      }else if(!allMiniBossesDefeated()){
+        player.x=gate.x-player.w-10;
+        player.vx=0;
+        msgEl.textContent=`🚧 중간보스를 모두 격파해야 합니다. 현재 ${miniBossesDefeated()}/4`;
+      }else if(boss.alive){
+        player.x=gate.x-player.w-10;
+        player.vx=0;
+        boss.active=true;
+        msgEl.textContent="👑 쿠퍼왕을 먼저 물리쳐야 황금 금고가 열립니다!";
+        hud();
+      }else{
+        clear=true;
+        score += 3500 + Math.ceil(timeLeft)*10;
+        spark(gate.x,250,"#ffd96a",55);
+        msgEl.textContent="🏆 FINAL CLEAR! 4명의 중간보스와 쿠퍼왕을 모두 물리쳤습니다!";
+        hud();
+      }
+    }
+
+    particles.forEach(p=>{
+      p.x+=p.vx*dt;
+      p.y+=p.vy*dt;
+      p.vy+=240*dt;
+      p.life-=dt;
+    });
+    particles=particles.filter(p=>p.life>0);
+
+    const target=player.x-W*.38;
+    cameraX += (target-cameraX)*Math.min(1,dt*7);
+    cameraX=Math.max(0,Math.min(WORLD-W,cameraX));
+
+    hud();
+  }
+
+  function r(x,y,w,h,color){
+    ctx.fillStyle=color;
+    ctx.fillRect(Math.round(x-cameraX),Math.round(y),Math.round(w),Math.round(h));
+  }
+
+  function drawBackground(){
+    const grad=ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,"#78c8ff");
+    grad.addColorStop(.55,"#bce9ff");
+    grad.addColorStop(1,"#edf8ff");
+    ctx.fillStyle=grad;
+    ctx.fillRect(0,0,W,H);
+
+    ctx.fillStyle="rgba(255,231,145,.95)";
+    ctx.beginPath();
+    ctx.arc(690,70,34,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.fillStyle="rgba(255,255,255,.92)";
+    [[100,72],[410,105],[720,130]].forEach(([x,y])=>{
+      const shift=(cameraX*.12)%900;
+      let xx=x-shift;
+      if(xx<-100)xx+=900;
+      ctx.fillRect(xx,y,72,17);
+      ctx.fillRect(xx+14,y-12,30,17);
+      ctx.fillRect(xx+42,y-8,25,15);
+    });
+
+    ctx.fillStyle="#93c8a4";
+    for(let x=-100;x<W+200;x+=210){
+      ctx.beginPath();
+      ctx.moveTo(x,352);
+      ctx.lineTo(x+100,250);
+      ctx.lineTo(x+200,352);
+      ctx.fill();
+    }
+
+    ctx.fillStyle="#6faf83";
+    for(let x=-50;x<W+220;x+=250){
+      ctx.beginPath();
+      ctx.moveTo(x,352);
+      ctx.lineTo(x+120,286);
+      ctx.lineTo(x+240,352);
+      ctx.fill();
+    }
+
+    // 보스 러시 표지판
+    const signs=[
+      [2215,"중간보스 1"],
+      [3220,"중간보스 2"],
+      [3850,"중간보스 3"],
+      [4620,"중간보스 4"],
+      [5425,"FINAL BOSS"]
+    ];
+
+    signs.forEach(([sx,label])=>{
+      const x=sx-cameraX;
+      if(x>-120 && x<W+120){
+        ctx.fillStyle="#795538";
+        ctx.fillRect(x+31,305,6,47);
+        ctx.fillStyle="#f0cf82";
+        ctx.fillRect(x,275,68,31);
+        ctx.fillStyle="#49351f";
+        ctx.font="bold 8px sans-serif";
+        ctx.textAlign="center";
+        ctx.fillText(label,x+34,294);
+      }
+    });
+
+    // 최종 쿠퍼왕 성벽
+    if(cameraX>5200){
+      const castleX=6030-cameraX;
+      ctx.fillStyle="#718098";
+      ctx.fillRect(castleX,210,170,142);
+      ctx.fillStyle="#5d697d";
+      for(let i=0;i<6;i++)ctx.fillRect(castleX+i*30,190,20,30);
+      ctx.fillStyle="#263142";
+      ctx.fillRect(castleX+58,276,48,76);
+    }
+  }
+
+  function drawPlatform(p,moving=false){
+    r(p.x,p.y,p.w,p.h,moving?"#5f83b3":"#b76c48");
+    r(p.x,p.y,p.w,6,moving?"#a9c9ef":"#f1b56e");
+    if(!moving){
+      for(let x=p.x;x<p.x+p.w;x+=24)r(x,p.y+8,22,9,"#9f5b3f");
+    }
+  }
+
+  function drawSpike(s){
+    const sx=s.x-cameraX;
+    ctx.fillStyle="#d5dde6";
+    for(let x=0;x<s.w;x+=18){
+      ctx.beginPath();
+      ctx.moveTo(sx+x,s.y+s.h);
+      ctx.lineTo(sx+x+9,s.y);
+      ctx.lineTo(sx+x+18,s.y+s.h);
+      ctx.fill();
+    }
+  }
+
+  function drawCoin(c){
+    if(c.taken)return;
+    const x=c.x-cameraX,y=c.y;
+    ctx.fillStyle="#ffe36d";
+    ctx.beginPath();ctx.arc(x,y,12,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#e7a900";
+    ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#fff7bf";
+    ctx.font="bold 7px monospace";
+    ctx.textAlign="center";
+    ctx.fillText("MG",x,y+2);
+  }
+
+  function drawKey(k){
+    if(k.taken)return;
+    const x=k.x-cameraX,y=k.y;
+    ctx.fillStyle="#3cc17f";
+    ctx.beginPath();ctx.arc(x,y,12,0,Math.PI*2);ctx.fill();
+    ctx.fillRect(x+8,y-4,18,8);
+    ctx.fillRect(x+20,y+3,5,8);
+    ctx.fillStyle="#dffbea";
+    ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();
+  }
+
+  function drawMushroom(m){
+    if(m.taken)return;
+    const x=m.x-cameraX,y=m.y;
+    ctx.fillStyle="#ef5656";
+    ctx.beginPath();ctx.arc(x,y,14,Math.PI,0);ctx.fill();
+    ctx.fillStyle="#fff";
+    ctx.beginPath();
+    ctx.arc(x-6,y-5,3,0,Math.PI*2);
+    ctx.arc(x+6,y-4,3,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle="#f7e7cf";
+    ctx.fillRect(x-8,y,16,13);
+    ctx.fillStyle="#333";
+    ctx.fillRect(x-4,y+4,2,3);
+    ctx.fillRect(x+2,y+4,2,3);
+  }
+
+  function drawFlower(f){
+    if(f.taken)return;
+    const x=f.x-cameraX,y=f.y;
+    ctx.fillStyle="#39b96d";
+    ctx.fillRect(x-2,y+6,4,16);
+    ctx.fillStyle="#ff8f36";
+    for(let i=0;i<6;i++){
+      const a=Math.PI*2/6*i;
+      ctx.beginPath();
+      ctx.arc(x+Math.cos(a)*10,y+Math.sin(a)*10,6,0,Math.PI*2);
+      ctx.fill();
+    }
+    ctx.fillStyle="#ffe36d";
+    ctx.beginPath();ctx.arc(x,y,6,0,Math.PI*2);ctx.fill();
+  }
+
+  function drawLeaf(l){
+    if(l.taken)return;
+
+    const x=l.x-cameraX;
+    const y=l.y;
+
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(-0.45);
+
+    ctx.fillStyle="#c89547";
+    ctx.beginPath();
+    ctx.ellipse(0,0,11,17,0,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.strokeStyle="#7f5a29";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(0,12);
+    ctx.lineTo(0,-12);
+    ctx.stroke();
+
+    ctx.strokeStyle="#ead39a";
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.moveTo(0,-5);
+    ctx.lineTo(-6,-1);
+    ctx.moveTo(0,0);
+    ctx.lineTo(7,4);
+    ctx.moveTo(0,5);
+    ctx.lineTo(-6,9);
+    ctx.stroke();
+
+    ctx.restore();
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 8px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("변신",x,y-22);
+  }
+
+  function drawEnemy(e){
+    if(!e.alive)return;
+    const x=e.x-cameraX,y=e.y;
+    ctx.fillStyle="#f26e6e";
+    ctx.beginPath();ctx.arc(x+16,y+15,15,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillRect(x+1,y+15,30,16);
+    ctx.fillStyle="#fff";
+    ctx.fillRect(x+6,y+13,7,7);
+    ctx.fillRect(x+19,y+13,7,7);
+    ctx.fillStyle="#222";
+    ctx.fillRect(x+9,y+15,2,3);
+    ctx.fillRect(x+22,y+15,2,3);
+    ctx.fillStyle="#934848";
+    ctx.fillRect(x+4,y+30,9,4);
+    ctx.fillRect(x+19,y+30,9,4);
+  }
+
+  function drawCheckpoint(){
+    const x=checkpointPole.x-cameraX;
+    r(checkpointPole.x,235,5,117,"#6c4b36");
+    ctx.fillStyle=checkpoint?"#45c983":"#d1d6dd";
+    ctx.fillRect(x+5,240,58,27);
+    ctx.fillStyle="#fff";
+    ctx.font="bold 9px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText(checkpoint?"SAVE!":"CHECK",x+34,257);
+  }
+
+  function drawGate(){
+    const x=gate.x-cameraX;
+    ctx.fillStyle="#805d3d";
+    ctx.fillRect(x-8,198,44,154);
+    ctx.fillStyle=(!boss.alive&&keysGot()===3)?"#e8be4d":"#5d6673";
+    ctx.fillRect(x,208,28,144);
+    ctx.fillStyle=(!boss.alive&&keysGot()===3)?"#fff0a5":"#b8bec7";
+    ctx.fillRect(x+6,225,16,110);
+    ctx.fillStyle="#fff";
+    ctx.font="bold 8px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText((!boss.alive&&keysGot()===3)?"OPEN":"LOCK",x+14,274);
+  }
+
+  function drawMidBossBarrier(){
+    if(!midBoss.alive) return;
+
+    const x=midBossBarrier.x-cameraX;
+
+    ctx.fillStyle="#627082";
+    ctx.fillRect(x,midBossBarrier.y,midBossBarrier.w,midBossBarrier.h);
+
+    ctx.fillStyle="#8794a5";
+    for(let y=midBossBarrier.y+8;y<350;y+=24){
+      ctx.fillRect(x+4,y,16,10);
+    }
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 8px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("LOCK",x+12,278);
+  }
+
+  function drawMidBoss(){
+    if(!midBoss.alive) return;
+    if(midBoss.flash>0 && Math.floor(midBoss.flash*30)%2===0) return;
+
+    const x=midBoss.x-cameraX;
+    const y=midBoss.y;
+
+    ctx.fillStyle="rgba(0,0,0,.17)";
+    ctx.beginPath();
+    ctx.ellipse(x+29,y+57,28,6,0,0,Math.PI*2);
+    ctx.fill();
+
+    // 등껍질
+    ctx.fillStyle="#35895a";
+    ctx.beginPath();
+    ctx.ellipse(x+29,y+31,27,26,0,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.fillStyle="#1f6240";
+    ctx.beginPath();
+    ctx.arc(x+29,y+31,16,0,Math.PI*2);
+    ctx.fill();
+
+    ctx.strokeStyle="#83c99a";
+    ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.moveTo(x+29,y+15);
+    ctx.lineTo(x+29,y+47);
+    ctx.moveTo(x+13,y+31);
+    ctx.lineTo(x+45,y+31);
+    ctx.stroke();
+
+    // 얼굴
+    ctx.fillStyle="#d6ab54";
+    ctx.beginPath();
+    ctx.roundRect(
+      midBoss.facing<0 ? x-2 : x+35,
+      y+15,
+      25,
+      23,
+      9
+    );
+    ctx.fill();
+
+    const eyeX=midBoss.facing<0 ? x+4 : x+50;
+    ctx.fillStyle="#fff";
+    ctx.fillRect(eyeX,y+20,6,6);
+    ctx.fillStyle="#222";
+    ctx.fillRect(eyeX+(midBoss.facing<0?1:3),y+22,2,3);
+
+    // 팔과 손에 든 부메랑
+    ctx.strokeStyle="#d6ab54";
+    ctx.lineWidth=5;
+    ctx.beginPath();
+    ctx.moveTo(x+(midBoss.facing<0?12:46),y+34);
+    ctx.lineTo(x+(midBoss.facing<0?-4:62),y+28);
+    ctx.stroke();
+
+    ctx.strokeStyle="#edb744";
+    ctx.lineWidth=5;
+    ctx.lineCap="round";
+    ctx.beginPath();
+    const bx=x+(midBoss.facing<0?-8:66);
+    ctx.moveTo(bx,y+17);
+    ctx.lineTo(bx+(midBoss.facing<0?-10:10),y+27);
+    ctx.lineTo(bx,y+35);
+    ctx.stroke();
+    ctx.lineCap="butt";
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 9px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("🪃 거북대장",x+29,y-10);
+
+    const barW=62;
+    ctx.fillStyle="rgba(0,0,0,.35)";
+    ctx.fillRect(x-2,y-5,barW,6);
+    ctx.fillStyle=midBoss.hp<=3?"#e96555":"#69bb78";
+    ctx.fillRect(x-2,y-5,barW*(midBoss.hp/midBoss.maxHp),6);
+  }
+
+  function drawBoomerangs(){
+    boomerangs.forEach(b=>{
+      const x=b.x-cameraX;
+      const y=b.y;
+
+      ctx.save();
+      ctx.translate(x,y);
+      ctx.rotate(b.spin);
+
+      ctx.strokeStyle="#e6ad36";
+      ctx.lineWidth=6;
+      ctx.lineCap="round";
+      ctx.beginPath();
+      ctx.moveTo(-10,-8);
+      ctx.lineTo(0,0);
+      ctx.lineTo(-10,8);
+      ctx.stroke();
+
+      ctx.strokeStyle="#fff1a8";
+      ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(-8,-7);
+      ctx.lineTo(0,0);
+      ctx.lineTo(-8,7);
+      ctx.stroke();
+
+      ctx.restore();
+    });
+  }
+
+  function drawSimpleBarrier(barrier,alive,label){
+    if(!alive) return;
+    const x=barrier.x-cameraX;
+
+    ctx.fillStyle="#627082";
+    ctx.fillRect(x,barrier.y,barrier.w,barrier.h);
+
+    ctx.fillStyle="#8794a5";
+    for(let y=barrier.y+8;y<350;y+=24){
+      ctx.fillRect(x+4,y,16,10);
+    }
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 7px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText(label,x+barrier.w/2,278);
+  }
+
+  function drawBoarBoss(){
+    if(!boarBoss.alive) return;
+    if(boarBoss.flash>0 && Math.floor(boarBoss.flash*30)%2===0) return;
+
+    const x=boarBoss.x-cameraX,y=boarBoss.y;
+
+    ctx.fillStyle="rgba(0,0,0,.17)";
+    ctx.beginPath();ctx.ellipse(x+31,y+57,30,6,0,0,Math.PI*2);ctx.fill();
+
+    ctx.fillStyle="#9b603d";
+    ctx.beginPath();ctx.ellipse(x+31,y+31,29,25,0,0,Math.PI*2);ctx.fill();
+
+    const faceX=boarBoss.facing<0?x-3:x+36;
+    ctx.fillStyle="#bb7650";
+    ctx.beginPath();ctx.roundRect(faceX,y+18,29,24,9);ctx.fill();
+
+    ctx.fillStyle="#fff2d7";
+    ctx.beginPath();
+    if(boarBoss.facing<0){
+      ctx.moveTo(x+2,y+35);ctx.lineTo(x-9,y+42);ctx.lineTo(x+6,y+42);
+    }else{
+      ctx.moveTo(x+60,y+35);ctx.lineTo(x+71,y+42);ctx.lineTo(x+56,y+42);
+    }
+    ctx.fill();
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 9px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("🐗 멧돼지대장",x+31,y-10);
+
+    ctx.fillStyle="rgba(0,0,0,.35)";
+    ctx.fillRect(x,y-5,62,6);
+    ctx.fillStyle=boarBoss.hp<=3?"#e64545":boarBoss.hp<=6?"#f08a45":"#d88a55";
+    ctx.fillRect(x,y-5,62*(boarBoss.hp/boarBoss.maxHp),6);
+  }
+
+  function drawBatBoss(){
+    if(!batBoss.alive) return;
+    if(batBoss.flash>0 && Math.floor(batBoss.flash*30)%2===0) return;
+
+    const x=batBoss.x-cameraX,y=batBoss.y;
+
+    ctx.fillStyle="#5d477f";
+    ctx.beginPath();
+    ctx.moveTo(x+27,y+18);ctx.lineTo(x-15,y+1);ctx.lineTo(x+2,y+31);
+    ctx.lineTo(x+27,y+25);ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(x+31,y+18);ctx.lineTo(x+73,y+1);ctx.lineTo(x+56,y+31);
+    ctx.lineTo(x+31,y+25);ctx.fill();
+
+    ctx.fillStyle="#8567b0";
+    ctx.beginPath();ctx.ellipse(x+29,y+23,20,18,0,0,Math.PI*2);ctx.fill();
+
+    ctx.fillStyle="#fff";
+    ctx.fillRect(x+17,y+18,7,6);
+    ctx.fillRect(x+35,y+18,7,6);
+    ctx.fillStyle="#222";
+    ctx.fillRect(x+20,y+20,2,3);
+    ctx.fillRect(x+37,y+20,2,3);
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 9px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("🦇 박쥐대장",x+29,y-12);
+
+    ctx.fillStyle="rgba(0,0,0,.35)";
+    ctx.fillRect(x-2,y-7,62,6);
+    ctx.fillStyle=batBoss.hp<=3?"#e96555":"#9878c5";
+    ctx.fillRect(x-2,y-7,62*(batBoss.hp/batBoss.maxHp),6);
+  }
+
+  function drawWindOrbs(){
+    windOrbs.forEach(o=>{
+      const x=o.x-cameraX,y=o.y;
+
+      ctx.strokeStyle="#b9e7ff";
+      ctx.lineWidth=3;
+      ctx.beginPath();
+      ctx.arc(x,y,o.r+4,0,Math.PI*1.6);
+      ctx.stroke();
+
+      ctx.fillStyle="#73c7e8";
+      ctx.beginPath();ctx.arc(x,y,o.r,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#e9fbff";
+      ctx.beginPath();ctx.arc(x-2,y-2,3,0,Math.PI*2);ctx.fill();
+    });
+  }
+
+  function drawCrabBoss(){
+    if(!crabBoss.alive) return;
+    if(crabBoss.flash>0 && Math.floor(crabBoss.flash*30)%2===0) return;
+
+    const x=crabBoss.x-cameraX,y=crabBoss.y;
+
+    ctx.fillStyle="rgba(0,0,0,.17)";
+    ctx.beginPath();ctx.ellipse(x+33,y+59,31,6,0,0,Math.PI*2);ctx.fill();
+
+    ctx.fillStyle="#d35e4d";
+    ctx.beginPath();ctx.ellipse(x+33,y+33,27,22,0,0,Math.PI*2);ctx.fill();
+
+    // 집게
+    ctx.fillStyle="#e7765e";
+    ctx.beginPath();ctx.arc(x+2,y+27,11,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(x+64,y+27,11,0,Math.PI*2);ctx.fill();
+
+    // 대포
+    ctx.fillStyle="#414b58";
+    const cannonX=crabBoss.facing<0?x-8:x+54;
+    ctx.fillRect(cannonX,y+14,20,10);
+
+    ctx.fillStyle="#fff";
+    ctx.fillRect(x+20,y+22,7,7);
+    ctx.fillRect(x+40,y+22,7,7);
+    ctx.fillStyle="#222";
+    ctx.fillRect(x+23,y+24,2,3);
+    ctx.fillRect(x+42,y+24,2,3);
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 9px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("🦀 대포 게대장",x+33,y-10);
+
+    ctx.fillStyle="rgba(0,0,0,.35)";
+    ctx.fillRect(x,y-5,66,6);
+    ctx.fillStyle=crabBoss.hp<=4?"#e96555":"#e27b62";
+    ctx.fillRect(x,y-5,66*(crabBoss.hp/crabBoss.maxHp),6);
+  }
+
+  function drawCrabBalls(){
+    crabBalls.forEach(b=>{
+      const x=b.x-cameraX,y=b.y;
+      ctx.fillStyle="#323944";
+      ctx.beginPath();ctx.arc(x,y,b.r,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#78818e";
+      ctx.beginPath();ctx.arc(x-3,y-3,3,0,Math.PI*2);ctx.fill();
+    });
+  }
+
+  function drawBoarShockwaves(){
+    boarShockwaves.forEach(s=>{
+      const x=s.x-cameraX;
+      const y=s.y;
+
+      ctx.fillStyle="#d6a064";
+      ctx.beginPath();
+      ctx.moveTo(x,y+s.h);
+      ctx.lineTo(x+s.w*.35,y);
+      ctx.lineTo(x+s.w*.6,y+s.h*.55);
+      ctx.lineTo(x+s.w,y+2);
+      ctx.lineTo(x+s.w,y+s.h);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle="#f2c37e";
+      ctx.fillRect(x+5,y+s.h-4,s.w-10,4);
+    });
+  }
+
+  function drawBossMeteors(){
+    bossMeteors.forEach(m=>{
+      const x=m.x-cameraX;
+      const y=m.y;
+
+      ctx.strokeStyle="rgba(255,113,55,.55)";
+      ctx.lineWidth=7;
+      ctx.beginPath();
+      ctx.moveTo(x-18,y-26);
+      ctx.lineTo(x,y);
+      ctx.stroke();
+
+      ctx.fillStyle="#cc4f2e";
+      ctx.beginPath();
+      ctx.arc(x,y,m.r+4,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle="#ff9d45";
+      ctx.beginPath();
+      ctx.arc(x-3,y-3,m.r,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle="#ffd56a";
+      ctx.beginPath();
+      ctx.arc(x-5,y-5,4,0,Math.PI*2);
+      ctx.fill();
+    });
+  }
+
+  function drawFlamePillars(){
+    flamePillars.forEach(p=>{
+      const x=p.x-cameraX;
+
+      /*
+        경고 표시
+      */
+      if(!p.active){
+        ctx.fillStyle="rgba(255,70,40,.25)";
+        ctx.fillRect(x-p.w/2,340,p.w,12);
+
+        ctx.strokeStyle="#ff6948";
+        ctx.lineWidth=2;
+        ctx.strokeRect(x-p.w/2,340,p.w,12);
+        return;
       }
 
-      hold("left", "left");
-      hold("right", "right");
+      const top=p.y-p.h;
 
-      document.getElementById("jump").addEventListener("click", () => {
-        input.jump = true;
-        canvas.focus();
-      });
+      ctx.fillStyle="#e84e2d";
+      ctx.beginPath();
+      ctx.moveTo(x-p.w/2,p.y);
+      ctx.lineTo(x-p.w*.34,top+35);
+      ctx.lineTo(x-p.w*.12,top);
+      ctx.lineTo(x+p.w*.05,top+28);
+      ctx.lineTo(x+p.w*.28,top+5);
+      ctx.lineTo(x+p.w/2,p.y);
+      ctx.closePath();
+      ctx.fill();
 
-      fireBtn.addEventListener("click", () => {
-        input.fire = true;
-        canvas.focus();
-      });
+      ctx.fillStyle="#ff9a35";
+      ctx.beginPath();
+      ctx.moveTo(x-p.w*.25,p.y);
+      ctx.lineTo(x-p.w*.12,top+47);
+      ctx.lineTo(x,top+20);
+      ctx.lineTo(x+p.w*.15,top+50);
+      ctx.lineTo(x+p.w*.27,p.y);
+      ctx.closePath();
+      ctx.fill();
 
-      restartBtn.addEventListener("click", restart);
+      ctx.fillStyle="#ffe26c";
+      ctx.fillRect(x-4,top+45,8,p.h-48);
+    });
+  }
 
-      pauseBtn.addEventListener("click", () => {
-        if (gameOver || clear) return;
-        paused = !paused;
-        pauseBtn.textContent = paused ? "▶ 계속하기" : "⏸ 일시정지";
-        msgEl.textContent = paused
-          ? "⏸ 게임이 일시정지되었습니다."
-          : "▶ 게임을 계속합니다!";
-        canvas.focus();
-      });
+  function drawHomingOrbs(){
+    homingOrbs.forEach(o=>{
+      const x=o.x-cameraX;
+      const y=o.y;
 
-      restart();
-      requestAnimationFrame(loop);
-    })();
-  </script>
+      ctx.fillStyle="rgba(255,50,60,.28)";
+      ctx.beginPath();
+      ctx.arc(x,y,16,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle="#e43d4b";
+      ctx.beginPath();
+      ctx.arc(x,y,10,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle="#fff08b";
+      ctx.beginPath();
+      ctx.arc(x-3,y-3,3,0,Math.PI*2);
+      ctx.fill();
+    });
+  }
+
+  function drawBoss(){
+    if(!boss.alive)return;
+    if(boss.flash>0 && Math.floor(boss.flash*30)%2===0)return;
+
+    const x=boss.x-cameraX,y=boss.y;
+
+    if(!boss.onGround){
+      ctx.fillStyle="rgba(255,255,255,.55)";
+      ctx.beginPath();
+      ctx.arc(x+10,y+62,7,0,Math.PI*2);
+      ctx.arc(x+55,y+64,5,0,Math.PI*2);
+      ctx.fill();
+    }
+
+    ctx.fillStyle="rgba(0,0,0,.18)";
+    ctx.beginPath();ctx.ellipse(x+33,y+68,32,7,0,0,Math.PI*2);ctx.fill();
+
+    // 등껍질
+    ctx.fillStyle="#348b55";
+    ctx.beginPath();ctx.ellipse(x+40,y+39,29,31,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#205d3a";
+    ctx.beginPath();ctx.arc(x+40,y+39,18,0,Math.PI*2);ctx.fill();
+
+    // 몸
+    ctx.fillStyle="#e5a13d";
+    ctx.beginPath();
+    ctx.roundRect(x+7,y+22,49,44,14);
+    ctx.fill();
+
+    // 얼굴
+    ctx.fillStyle="#f0b54a";
+    ctx.beginPath();
+    ctx.roundRect(x+3,y+8,53,31,13);
+    ctx.fill();
+
+    // 뿔
+    ctx.fillStyle="#fff3d2";
+    ctx.beginPath();
+    ctx.moveTo(x+8,y+12);ctx.lineTo(x-1,y-3);ctx.lineTo(x+17,y+8);ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x+48,y+10);ctx.lineTo(x+61,y-3);ctx.lineTo(x+54,y+16);ctx.fill();
+
+    // 눈
+    ctx.fillStyle="#fff";
+    ctx.fillRect(x+13,y+15,11,9);
+    ctx.fillRect(x+36,y+15,11,9);
+    ctx.fillStyle="#222";
+    ctx.fillRect(x+18,y+17,4,5);
+    ctx.fillRect(x+38,y+17,4,5);
+
+    // 입
+    ctx.fillStyle="#702d27";
+    ctx.fillRect(x+17,y+29,28,7);
+
+    // 왕관
+    ctx.fillStyle="#ffd34e";
+    ctx.beginPath();
+    ctx.moveTo(x+15,y+5);ctx.lineTo(x+20,y-12);ctx.lineTo(x+29,y);
+    ctx.lineTo(x+36,y-14);ctx.lineTo(x+44,y+4);ctx.closePath();ctx.fill();
+    ctx.fillStyle="#e5a514";
+    ctx.fillRect(x+15,y+2,29,6);
+
+    // 발
+    ctx.fillStyle="#835632";
+    ctx.fillRect(x+8,y+62,19,8);
+    ctx.fillRect(x+40,y+62,19,8);
+
+    // 이름 + 체력바
+    ctx.fillStyle="#fff";
+    ctx.font="bold 10px sans-serif";
+    ctx.textAlign="center";
+    ctx.fillText("👑 쿠퍼왕",x+33,y-21);
+
+    const barW=72;
+    ctx.fillStyle="rgba(0,0,0,.35)";
+    ctx.fillRect(x-3,y-15,barW,7);
+    ctx.fillStyle=boss.hp<=6?"#ef5350":boss.hp<=12?"#f3a43b":"#63c174";
+    ctx.fillRect(x-3,y-15,barW*(boss.hp/boss.maxHp),7);
+  }
+
+  function drawPlayerFireballs(){
+    fireballs.forEach(fb=>{
+      const x=fb.x-cameraX,y=fb.y;
+      ctx.fillStyle="#ff8e3c";
+      ctx.beginPath();ctx.arc(x,y,fb.r,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#ffd36d";
+      ctx.beginPath();ctx.arc(x-2,y-2,fb.r-3,0,Math.PI*2);ctx.fill();
+    });
+  }
+
+  function drawBossFireballs(){
+    bossFireballs.forEach(f=>{
+      const x=f.x-cameraX,y=f.y;
+      ctx.fillStyle="#ed552f";
+      ctx.beginPath();ctx.arc(x,y,f.r+4,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#ff9f32";
+      ctx.beginPath();ctx.arc(x,y,f.r,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle="#ffe579";
+      ctx.beginPath();ctx.arc(x-2,y-2,4,0,Math.PI*2);ctx.fill();
+    });
+  }
+
+  function drawParticles(){
+    for(const p of particles){
+      ctx.globalAlpha=Math.max(0,p.life);
+      ctx.fillStyle=p.color;
+      ctx.fillRect(p.x-cameraX,p.y,4,4);
+    }
+    ctx.globalAlpha=1;
+  }
+
+  function drawPlayer(){
+    const x=player.x-cameraX,y=player.y;
+    if(player.inv>0 && Math.floor(player.inv*10)%2===0)return;
+
+    ctx.fillStyle="rgba(0,0,0,.15)";
+    ctx.beginPath();ctx.ellipse(x+17,y+48,16,4,0,0,Math.PI*2);ctx.fill();
+
+    let body="#2b78c8",trim="#176ab6";
+    if(player.power==="big"){body="#30a46c";trim="#248153";}
+    if(player.power==="fire"){body="#ff8e3c";trim="#d96b17";}
+    if(player.power==="raccoon" || player.power==="raccoonFire"){body="#8d6844";trim="#68482f";}
+    if(player.power==="raccoonFire"){body="#8d6844";trim="#e67625";}
+
+    ctx.fillStyle=body;
+    ctx.beginPath();ctx.roundRect(x+3,y+3,28,37,9);ctx.fill();
+
+    ctx.fillStyle="#fff";
+    ctx.beginPath();ctx.roundRect(x+6,y+7,22,23,7);ctx.fill();
+
+    ctx.fillStyle="#f2bc56";
+    ctx.fillRect(x+5,y,6,8);
+    ctx.fillRect(x+23,y,6,8);
+
+    ctx.fillStyle="#252525";
+    ctx.fillRect(x+10,y+15,3,4);
+    ctx.fillRect(x+21,y+15,3,4);
+
+    ctx.fillStyle="#f2a9ad";
+    ctx.fillRect(x+7,y+21,4,3);
+    ctx.fillRect(x+23,y+21,4,3);
+
+    ctx.strokeStyle="#333";
+    ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(x+17,y+20,5,.2,Math.PI-.2);ctx.stroke();
+
+    ctx.fillStyle=trim;
+    ctx.fillRect(x+7,y+34,20,11);
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 7px monospace";
+    ctx.textAlign="center";
+    ctx.fillText("MG",x+17,y+42);
+
+    if(player.power==="raccoon" || player.power==="raccoonFire"){
+      /*
+        너구리 귀
+      */
+      ctx.fillStyle="#6e4d33";
+      ctx.beginPath();
+      ctx.moveTo(x+6,y+8);
+      ctx.lineTo(x+1,y-2);
+      ctx.lineTo(x+12,y+4);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(x+27,y+8);
+      ctx.lineTo(x+33,y-2);
+      ctx.lineTo(x+22,y+4);
+      ctx.fill();
+
+      /*
+        너구리 눈가 무늬
+      */
+      ctx.fillStyle="#4d3525";
+      ctx.fillRect(x+7,y+12,8,7);
+      ctx.fillRect(x+19,y+12,8,7);
+
+      /*
+        꼬리
+      */
+      ctx.save();
+      ctx.translate(x+30,y+31);
+      ctx.rotate(player.face<0 ? -0.55 : 0.55);
+
+      ctx.fillStyle="#8d6844";
+      ctx.beginPath();
+      ctx.ellipse(player.face<0 ? 13 : -13,7,17,7,0,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.strokeStyle="#4e3828";
+      ctx.lineWidth=4;
+      ctx.beginPath();
+      ctx.moveTo(player.face<0 ? 7 : -7,3);
+      ctx.lineTo(player.face<0 ? 10 : -10,10);
+      ctx.moveTo(player.face<0 ? 16 : -16,1);
+      ctx.lineTo(player.face<0 ? 18 : -18,11);
+      ctx.stroke();
+      ctx.restore();
+
+      /*
+        활공 중 작은 날개 효과
+      */
+      if(player.gliding && !player.onGround){
+        ctx.fillStyle="rgba(255,255,255,.85)";
+        ctx.beginPath();
+        ctx.ellipse(x-4,y+24,10,5,-.45,0,Math.PI*2);
+        ctx.ellipse(x+38,y+24,10,5,.45,0,Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    if(player.power==="raccoonFire"){
+      // 복합 상태임을 보여주는 작은 불꽃 문양
+      ctx.fillStyle="#ff8e3c";
+      ctx.beginPath();
+      ctx.arc(x+29,y+9,5,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.fillStyle="#ffd36d";
+      ctx.beginPath();
+      ctx.arc(x+28,y+8,2.5,0,Math.PI*2);
+      ctx.fill();
+    }
+
+    ctx.fillStyle="#fff";
+    ctx.font="bold 9px sans-serif";
+    ctx.fillText("김금고",x+17,y-7);
+  }
+
+  function drawOverlay(){
+    if(!paused && !gameOver && !clear)return;
+
+    ctx.fillStyle="rgba(16,24,40,.58)";
+    ctx.fillRect(0,0,W,H);
+
+    ctx.fillStyle="#fff";
+    ctx.textAlign="center";
+    ctx.font="bold 34px monospace";
+    ctx.fillText(paused?"PAUSE":clear?"FINAL CLEAR!":"GAME OVER",W/2,H/2-12);
+
+    ctx.font="bold 15px sans-serif";
+    ctx.fillText(
+      clear ? "쿠퍼왕을 물리치고 MG 황금 금고를 열었습니다! ✨" :
+      gameOver ? "처음부터 다시 도전하세요." :
+      "게임이 일시정지되었습니다.",
+      W/2,H/2+24
+    );
+  }
+
+  function render(){
+    drawBackground();
+    grounds.forEach(p=>drawPlatform(p));
+    platforms.forEach(p=>drawPlatform(p));
+    movers.forEach(p=>drawPlatform(p,true));
+    spikes.forEach(drawSpike);
+    coins.forEach(drawCoin);
+    keys.forEach(drawKey);
+    mushrooms.forEach(drawMushroom);
+    flowers.forEach(drawFlower);
+    leaves.forEach(drawLeaf);
+    enemies.forEach(drawEnemy);
+    drawCheckpoint();
+    drawMidBossBarrier();
+    drawMidBoss();
+
+    drawSimpleBarrier(boarBarrier,boarBoss.alive,"Ⅱ");
+    drawBoarBoss();
+    drawBoarShockwaves();
+
+    drawSimpleBarrier(batBarrier,batBoss.alive,"Ⅲ");
+    drawBatBoss();
+
+    drawSimpleBarrier(crabBarrier,crabBoss.alive,"Ⅳ");
+    drawCrabBoss();
+
+    drawBoss();
+    drawGate();
+
+    drawBoomerangs();
+    drawWindOrbs();
+    drawCrabBalls();
+    drawPlayerFireballs();
+
+    drawBossMeteors();
+    drawFlamePillars();
+    drawHomingOrbs();
+    drawBossFireballs();
+    drawParticles();
+    drawPlayer();
+    drawOverlay();
+  }
+
+  function loop(t){
+    const dt=Math.min(.033,(t-last)/1000||0);
+    last=t;
+    update(dt);
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  function isTypingTarget(target){
+    return target && ["INPUT","TEXTAREA","SELECT"].includes(target.tagName);
+  }
+
+  document.addEventListener("keydown",e=>{
+    if(isTypingTarget(e.target))return;
+    if(["ArrowLeft","ArrowRight","ArrowUp"," ","a","A","d","D","w","W","f","F","x","X"].includes(e.key)){
+      e.preventDefault();
+    }
+    if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")input.left=true;
+    if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")input.right=true;
+    if(e.key==="ArrowUp"||e.key==="w"||e.key==="W"||e.key===" ")input.jump=true;
+    if(e.key==="f"||e.key==="F"||e.key==="x"||e.key==="X")input.fire=true;
+  });
+
+  document.addEventListener("keyup",e=>{
+    if(e.key==="ArrowLeft"||e.key==="a"||e.key==="A")input.left=false;
+    if(e.key==="ArrowRight"||e.key==="d"||e.key==="D")input.right=false;
+  });
+
+  function hold(id,key){
+    const el=document.getElementById(id);
+    const on=()=>{input[key]=true;canvas.focus();};
+    const off=()=>{input[key]=false;};
+    el.addEventListener("pointerdown",on);
+    el.addEventListener("pointerup",off);
+    el.addEventListener("pointercancel",off);
+    el.addEventListener("pointerleave",off);
+  }
+
+  hold("left","left");
+  hold("right","right");
+
+  document.getElementById("jump").addEventListener("click",()=>{
+    input.jump=true;
+    canvas.focus();
+  });
+
+  document.getElementById("fire").addEventListener("click",()=>{
+    input.fire=true;
+    canvas.focus();
+  });
+
+  document.getElementById("restart").addEventListener("click",restart);
+
+  pauseBtn.addEventListener("click",()=>{
+    if(gameOver||clear)return;
+    paused=!paused;
+    pauseBtn.textContent=paused?"▶ 계속하기":"⏸ 일시정지";
+    msgEl.textContent=paused?"⏸ 게임이 일시정지되었습니다.":"▶ 게임을 계속합니다!";
+    canvas.focus();
+  });
+
+  restart();
+  requestAnimationFrame(loop);
+})();
+</script>
 </body>
 </html>
