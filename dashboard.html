@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MG 지점 경영 대시보드</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7"></script>
+
+  <style>
+    :root{
+      --bg:#f4f7f6;
+      --card:#ffffff;
+      --text:#17312b;
+      --muted:#667a74;
+      --line:#dce7e3;
+      --primary:#0f7a5a;
+      --primary-soft:#e7f4ef;
+      --danger:#b63c3c;
+      --shadow:0 10px 28px rgba(25,56,48,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+    }
+    .wrap{max-width:1240px;margin:0 auto;padding:28px 20px 48px}
+    header{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px
+    }
+    h1{margin:0;font-size:28px;letter-spacing:-.03em}
+    .subtitle{margin-top:8px;color:var(--muted);font-size:14px}
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .status{
+      padding:9px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);
+      color:var(--muted);font-size:13px;white-space:nowrap
+    }
+    button{
+      border:0;border-radius:12px;background:var(--primary);color:#fff;
+      padding:10px 14px;font-weight:700;cursor:pointer
+    }
+    button:disabled{opacity:.55;cursor:default}
+    .summary{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px
+    }
+    .kpi{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      padding:18px;box-shadow:var(--shadow)
+    }
+    .kpi .label{font-size:13px;color:var(--muted);margin-bottom:10px}
+    .kpi .value{font-size:27px;font-weight:800;letter-spacing:-.03em}
+    .kpi .unit{font-size:13px;color:var(--muted);margin-left:4px}
+    .grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:18px
+    }
+    .card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      padding:18px;box-shadow:var(--shadow);min-height:360px
+    }
+    .card.wide{grid-column:1 / -1}
+    .card h2{margin:0 0 4px;font-size:17px}
+    .card p{margin:0 0 18px;color:var(--muted);font-size:13px}
+    .chart-wrap{position:relative;height:290px}
+    .error{
+      display:none;margin:0 0 18px;padding:12px 14px;border-radius:12px;
+      background:#fff0f0;color:var(--danger);border:1px solid #f0caca;font-size:14px
+    }
+    .table-card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      margin-top:18px;box-shadow:var(--shadow);overflow:hidden
+    }
+    .table-head{padding:18px}
+    .table-head h2{margin:0 0 4px;font-size:17px}
+    .table-head p{margin:0;color:var(--muted);font-size:13px}
+    .table-scroll{overflow:auto}
+    table{width:100%;border-collapse:collapse;min-width:760px}
+    th,td{padding:13px 16px;border-top:1px solid var(--line);text-align:right;font-size:14px}
+    th{background:#f8fbfa;color:var(--muted);font-size:12px}
+    th:first-child,td:first-child{text-align:left}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;
+      background:var(--primary-soft);color:var(--primary);font-weight:700;font-size:12px
+    }
+    .footer-note{
+      margin-top:14px;color:var(--muted);font-size:12px;line-height:1.6
+    }
+    @media (max-width:900px){
+      .summary{grid-template-columns:repeat(2,1fr)}
+      .grid{grid-template-columns:1fr}
+      .card.wide{grid-column:auto}
+      header{flex-direction:column}
+      .actions{justify-content:flex-start}
+    }
+    @media (max-width:540px){
+      .summary{grid-template-columns:1fr}
+      h1{font-size:23px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>MG 지점 경영 대시보드</h1>
+        <div class="subtitle">Supabase 실시간 조회 · 페이지를 열 때마다 최신 데이터를 다시 불러옵니다.</div>
+      </div>
+      <div class="actions">
+        <div id="status" class="status">데이터 불러오는 중…</div>
+        <button id="refreshBtn" type="button">새로고침</button>
+      </div>
+    </header>
+
+    <div id="errorBox" class="error"></div>
+
+    <section class="summary">
+      <div class="kpi">
+        <div class="label">전체 조합원 수</div>
+        <div><span id="totalMembers" class="value">-</span><span class="unit">명</span></div>
+      </div>
+      <div class="kpi">
+        <div class="label">예적금 총액</div>
+        <div><span id="totalDeposits" class="value">-</span><span class="unit">억원</span></div>
+      </div>
+      <div class="kpi">
+        <div class="label">대출 총액</div>
+        <div><span id="totalLoans" class="value">-</span><span class="unit">억원</span></div>
+      </div>
+      <div class="kpi">
+        <div class="label">연체 건수</div>
+        <div><span id="totalOverdue" class="value">-</span><span class="unit">건</span></div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>지점별 조합원 수</h2>
+        <p>각 지점에 소속된 조합원 수</p>
+        <div class="chart-wrap"><canvas id="membersChart"></canvas></div>
+      </article>
+
+      <article class="card">
+        <h2>지점별 연체 건수</h2>
+        <p>대출 상태가 '연체'인 계좌 수</p>
+        <div class="chart-wrap"><canvas id="overdueChart"></canvas></div>
+      </article>
+
+      <article class="card wide">
+        <h2>지점별 예적금·대출 총액</h2>
+        <p>지점별 잔액 및 대출원금 합계 · 단위: 억원</p>
+        <div class="chart-wrap"><canvas id="amountChart"></canvas></div>
+      </article>
+    </section>
+
+    <section class="table-card">
+      <div class="table-head">
+        <h2>지점별 상세 현황</h2>
+        <p>차트에 사용된 최신 집계 결과</p>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>지점</th>
+              <th>조합원 수</th>
+              <th>예적금 총액</th>
+              <th>대출 총액</th>
+              <th>연체 건수</th>
+            </tr>
+          </thead>
+          <tbody id="branchTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      ※ 이 페이지는 Supabase publishable key를 사용하는 브라우저용 예시입니다.
+      운영 공개 전에는 RLS 정책을 적용해 읽기 권한만 허용하는 구성을 권장합니다.
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://exbttjwwmccoaabjhazn.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_z_VqKliDDzltfhvqwEWbXA_Rm45qmnP";
+
+    const { createClient } = supabase;
+    const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    });
+
+    const fmtInt = new Intl.NumberFormat("ko-KR");
+    const fmtAmount = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
+
+    let charts = [];
+
+    function toNumber(v) {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function wonToEok(v) {
+      return toNumber(v) / 100000000;
+    }
+
+    function setStatus(text) {
+      document.getElementById("status").textContent = text;
+    }
+
+    function showError(message) {
+      const box = document.getElementById("errorBox");
+      box.textContent = message;
+      box.style.display = "block";
+    }
+
+    function clearError() {
+      document.getElementById("errorBox").style.display = "none";
+    }
+
+    function destroyCharts() {
+      charts.forEach(c => c.destroy());
+      charts = [];
+    }
+
+    async function fetchAllData() {
+      clearError();
+      setStatus("최신 데이터 조회 중…");
+      document.getElementById("refreshBtn").disabled = true;
+
+      try {
+        const [branchesRes, membersRes, depositsRes, loansRes] = await Promise.all([
+          db.from("branches").select("branch_id, branch_name").order("branch_id"),
+          db.from("members").select("member_id, branch_id"),
+          db.from("deposit_accounts").select("account_id, branch_id, balance"),
+          db.from("loans").select("loan_id, branch_id, loan_amount, status")
+        ]);
+
+        const results = [branchesRes, membersRes, depositsRes, loansRes];
+        const failed = results.find(r => r.error);
+        if (failed) throw failed.error;
+
+        renderDashboard(
+          branchesRes.data || [],
+          membersRes.data || [],
+          depositsRes.data || [],
+          loansRes.data || []
+        );
+
+        setStatus("최종 조회 " + new Date().toLocaleString("ko-KR"));
+      } catch (err) {
+        console.error(err);
+        showError("Supabase 데이터를 불러오지 못했습니다: " + (err?.message || String(err)));
+        setStatus("조회 실패");
+      } finally {
+        document.getElementById("refreshBtn").disabled = false;
+      }
+    }
+
+    function renderDashboard(branches, members, deposits, loans) {
+      const rows = branches.map(branch => {
+        const branchId = branch.branch_id;
+        const memberCount = members.filter(m => m.branch_id === branchId).length;
+        const depositTotal = deposits
+          .filter(d => d.branch_id === branchId)
+          .reduce((sum, d) => sum + toNumber(d.balance), 0);
+        const loanTotal = loans
+          .filter(l => l.branch_id === branchId)
+          .reduce((sum, l) => sum + toNumber(l.loan_amount), 0);
+        const overdueCount = loans
+          .filter(l => l.branch_id === branchId && l.status === "연체").length;
+
+        return {
+          branchId,
+          branchName: branch.branch_name,
+          memberCount,
+          depositTotal,
+          loanTotal,
+          overdueCount
+        };
+      });
+
+      const totalMembers = rows.reduce((s, r) => s + r.memberCount, 0);
+      const totalDeposits = rows.reduce((s, r) => s + r.depositTotal, 0);
+      const totalLoans = rows.reduce((s, r) => s + r.loanTotal, 0);
+      const totalOverdue = rows.reduce((s, r) => s + r.overdueCount, 0);
+
+      document.getElementById("totalMembers").textContent = fmtInt.format(totalMembers);
+      document.getElementById("totalDeposits").textContent = fmtAmount.format(wonToEok(totalDeposits));
+      document.getElementById("totalLoans").textContent = fmtAmount.format(wonToEok(totalLoans));
+      document.getElementById("totalOverdue").textContent = fmtInt.format(totalOverdue);
+
+      renderTable(rows);
+      renderCharts(rows);
+    }
+
+    function renderTable(rows) {
+      document.getElementById("branchTableBody").innerHTML = rows.map(r => `
+        <tr>
+          <td><span class="badge">${escapeHtml(r.branchName)}</span></td>
+          <td>${fmtInt.format(r.memberCount)}명</td>
+          <td>${fmtAmount.format(wonToEok(r.depositTotal))}억원</td>
+          <td>${fmtAmount.format(wonToEok(r.loanTotal))}억원</td>
+          <td>${fmtInt.format(r.overdueCount)}건</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderCharts(rows) {
+      destroyCharts();
+
+      const labels = rows.map(r => r.branchName);
+
+      charts.push(new Chart(document.getElementById("membersChart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "조합원 수",
+            data: rows.map(r => r.memberCount),
+            backgroundColor: "rgba(15, 122, 90, .72)",
+            borderRadius: 8
+          }]
+        },
+        options: baseOptions("명")
+      }));
+
+      charts.push(new Chart(document.getElementById("overdueChart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "연체 건수",
+            data: rows.map(r => r.overdueCount),
+            backgroundColor: "rgba(182, 60, 60, .72)",
+            borderRadius: 8
+          }]
+        },
+        options: baseOptions("건")
+      }));
+
+      charts.push(new Chart(document.getElementById("amountChart"), {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "예적금 총액",
+              data: rows.map(r => wonToEok(r.depositTotal)),
+              backgroundColor: "rgba(15, 122, 90, .72)",
+              borderRadius: 8
+            },
+            {
+              label: "대출 총액",
+              data: rows.map(r => wonToEok(r.loanTotal)),
+              backgroundColor: "rgba(45, 91, 161, .72)",
+              borderRadius: 8
+            }
+          ]
+        },
+        options: baseOptions("억원")
+      }));
+    }
+
+    function baseOptions(unit) {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { position: "top" },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.dataset.label}: ${fmtAmount.format(ctx.parsed.y)}${unit}`
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: value => fmtAmount.format(value) + unit
+            }
+          }
+        }
+      };
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    document.getElementById("refreshBtn").addEventListener("click", fetchAllData);
+    window.addEventListener("DOMContentLoaded", fetchAllData);
+  </script>
+</body>
+</html>
