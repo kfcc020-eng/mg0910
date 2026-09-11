@@ -18,95 +18,98 @@
       --primary:#0f7a5a;
       --primary-soft:#e7f4ef;
       --danger:#b63c3c;
+      --danger-soft:#fff0f0;
+      --blue:#2d5ba1;
       --shadow:0 10px 28px rgba(25,56,48,.08);
       --radius:18px;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
+      margin:0;background:var(--bg);color:var(--text);
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
     }
     .wrap{max-width:1240px;margin:0 auto;padding:28px 20px 48px}
-    header{
-      display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px
-    }
+    header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:22px}
     h1{margin:0;font-size:28px;letter-spacing:-.03em}
     .subtitle{margin-top:8px;color:var(--muted);font-size:14px}
     .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-    .status{
-      padding:9px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);
-      color:var(--muted);font-size:13px;white-space:nowrap
-    }
-    button{
-      border:0;border-radius:12px;background:var(--primary);color:#fff;
-      padding:10px 14px;font-weight:700;cursor:pointer
-    }
+    .status{padding:9px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--muted);font-size:13px;white-space:nowrap}
+    button{border:0;border-radius:12px;background:var(--primary);color:#fff;padding:10px 14px;font-weight:700;cursor:pointer;font:inherit}
+    button:hover:not(:disabled){filter:brightness(.97)}
     button:disabled{opacity:.55;cursor:default}
     button.secondary{background:#fff;color:var(--primary);border:1px solid var(--line)}
-    .connection-card{
+    button.danger{background:var(--danger)}
+    button.mini{padding:7px 10px;border-radius:9px;font-size:12px}
+
+    .connection-card,.management-card{
       background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
       padding:18px;box-shadow:var(--shadow);margin-bottom:18px
     }
-    .connection-card h2{margin:0 0 6px;font-size:17px}
-    .connection-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
-    .connection-grid{
-      display:grid;grid-template-columns:minmax(260px,1.15fr) minmax(320px,1.6fr) auto;
-      gap:12px;align-items:end;margin-top:14px
-    }
+    .connection-card h2,.management-card h2{margin:0 0 6px;font-size:17px}
+    .connection-card p,.management-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+    .connection-grid{display:grid;grid-template-columns:minmax(260px,1.15fr) minmax(320px,1.6fr) auto;gap:12px;align-items:end;margin-top:14px}
     .field label{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:var(--text)}
-    .field input{
+    .field input,.field select{
       width:100%;height:42px;border:1px solid var(--line);border-radius:11px;background:#fff;
       padding:0 12px;color:var(--text);font:inherit;outline:none
     }
-    .field input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+    .field input:focus,.field select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
     .connection-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .security-note{margin-top:10px!important;font-size:12px!important}
-    .summary{
-      display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px
-    }
-    .kpi{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-      padding:18px;box-shadow:var(--shadow)
-    }
+
+    .error{display:none;margin:0 0 18px;padding:12px 14px;border-radius:12px;background:var(--danger-soft);color:var(--danger);border:1px solid #f0caca;font-size:14px}
+    .success{display:none;margin:0 0 18px;padding:12px 14px;border-radius:12px;background:var(--primary-soft);color:var(--primary);border:1px solid #cbe7dc;font-size:14px}
+
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+    .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
     .kpi .label{font-size:13px;color:var(--muted);margin-bottom:10px}
     .kpi .value{font-size:27px;font-weight:800;letter-spacing:-.03em}
     .kpi .unit{font-size:13px;color:var(--muted);margin-left:4px}
-    .grid{
-      display:grid;grid-template-columns:1fr 1fr;gap:18px
-    }
-    .card{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-      padding:18px;box-shadow:var(--shadow);min-height:360px
-    }
+
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);min-height:360px}
     .card.wide{grid-column:1 / -1}
     .card h2{margin:0 0 4px;font-size:17px}
     .card p{margin:0 0 18px;color:var(--muted);font-size:13px}
     .chart-wrap{position:relative;height:290px}
-    .error{
-      display:none;margin:0 0 18px;padding:12px 14px;border-radius:12px;
-      background:#fff0f0;color:var(--danger);border:1px solid #f0caca;font-size:14px
-    }
-    .table-card{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-      margin-top:18px;box-shadow:var(--shadow);overflow:hidden
-    }
+
+    .table-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-top:18px;box-shadow:var(--shadow);overflow:hidden}
     .table-head{padding:18px}
     .table-head h2{margin:0 0 4px;font-size:17px}
     .table-head p{margin:0;color:var(--muted);font-size:13px}
     .table-scroll{overflow:auto}
     table{width:100%;border-collapse:collapse;min-width:760px}
-    th,td{padding:13px 16px;border-top:1px solid var(--line);text-align:right;font-size:14px}
+    th,td{padding:13px 16px;border-top:1px solid var(--line);text-align:right;font-size:14px;white-space:nowrap}
     th{background:#f8fbfa;color:var(--muted);font-size:12px}
     th:first-child,td:first-child{text-align:left}
-    .badge{
-      display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;
-      background:var(--primary-soft);color:var(--primary);font-weight:700;font-size:12px
-    }
-    .footer-note{
-      margin-top:14px;color:var(--muted);font-size:12px;line-height:1.6
-    }
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-weight:700;font-size:12px}
+
+    .management-card{margin-top:18px;padding:0;overflow:hidden}
+    .management-header{padding:18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{background:#fff;color:var(--muted);border:1px solid var(--line)}
+    .tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .manage-toolbar{padding:14px 18px;display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+    .manage-toolbar .left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .manage-toolbar input{height:40px;min-width:260px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font:inherit;outline:none}
+    .manage-toolbar input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+    .manage-meta{font-size:12px;color:var(--muted)}
+    .row-actions{display:flex;gap:6px;justify-content:flex-end}
+    .empty{padding:34px 18px;text-align:center;color:var(--muted)}
+
+    dialog{border:0;border-radius:18px;padding:0;width:min(720px,calc(100vw - 28px));box-shadow:0 24px 70px rgba(20,45,38,.25)}
+    dialog::backdrop{background:rgba(16,35,30,.42)}
+    .modal-head{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .modal-head h3{margin:0;font-size:19px}
+    .icon-btn{background:#fff;color:var(--muted);border:1px solid var(--line);padding:7px 10px}
+    .modal-body{padding:20px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-grid .wide{grid-column:1 / -1}
+    .modal-actions{padding:16px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+    .form-help{font-size:12px;color:var(--muted);line-height:1.5;margin-top:6px}
+
+    .footer-note{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.6}
+
     @media (max-width:900px){
       .summary{grid-template-columns:repeat(2,1fr)}
       .grid{grid-template-columns:1fr}
@@ -117,9 +120,13 @@
       .connection-actions{align-items:stretch}
       .connection-actions button{flex:1}
     }
-    @media (max-width:540px){
+    @media (max-width:640px){
       .summary{grid-template-columns:1fr}
       h1{font-size:23px}
+      .form-grid{grid-template-columns:1fr}
+      .form-grid .wide{grid-column:auto}
+      .manage-toolbar input{min-width:0;width:100%}
+      .manage-toolbar .left{width:100%}
     }
   </style>
 </head>
@@ -128,7 +135,7 @@
     <header>
       <div>
         <h1>MG 지점 경영 대시보드</h1>
-        <div class="subtitle">Supabase URL과 Publishable/Anon Key를 입력해 지점 데이터를 조회합니다.</div>
+        <div class="subtitle">Supabase 연결 · 경영 현황 조회 · 조합원/예적금/대출 관리</div>
       </div>
       <div class="actions">
         <div id="status" class="status">연결 정보 입력 필요</div>
@@ -153,389 +160,467 @@
           <button id="toggleKeyBtn" class="secondary" type="button" aria-pressed="false">Key 보기</button>
         </div>
       </div>
-      <p class="security-note">※ 보안을 위해 <strong>service_role / secret key</strong>는 브라우저에 입력하지 마세요. 이 파일은 입력한 Key를 localStorage에 저장하지 않습니다.</p>
+      <p class="security-note">※ <strong>service_role / secret key</strong>는 브라우저에 입력하지 마세요. 등록·수정·삭제 기능은 해당 역할에 대한 Data API 권한과 RLS 정책이 허용된 경우에만 동작합니다.</p>
     </section>
 
     <div id="errorBox" class="error"></div>
+    <div id="successBox" class="success"></div>
 
     <section class="summary">
-      <div class="kpi">
-        <div class="label">전체 조합원 수</div>
-        <div><span id="totalMembers" class="value">-</span><span class="unit">명</span></div>
-      </div>
-      <div class="kpi">
-        <div class="label">예적금 총액</div>
-        <div><span id="totalDeposits" class="value">-</span><span class="unit">억원</span></div>
-      </div>
-      <div class="kpi">
-        <div class="label">대출 총액</div>
-        <div><span id="totalLoans" class="value">-</span><span class="unit">억원</span></div>
-      </div>
-      <div class="kpi">
-        <div class="label">연체 건수</div>
-        <div><span id="totalOverdue" class="value">-</span><span class="unit">건</span></div>
-      </div>
+      <div class="kpi"><div class="label">전체 조합원 수</div><div><span id="totalMembers" class="value">-</span><span class="unit">명</span></div></div>
+      <div class="kpi"><div class="label">예적금 총액</div><div><span id="totalDeposits" class="value">-</span><span class="unit">억원</span></div></div>
+      <div class="kpi"><div class="label">대출 총액</div><div><span id="totalLoans" class="value">-</span><span class="unit">억원</span></div></div>
+      <div class="kpi"><div class="label">연체 건수</div><div><span id="totalOverdue" class="value">-</span><span class="unit">건</span></div></div>
     </section>
 
     <section class="grid">
-      <article class="card">
-        <h2>지점별 조합원 수</h2>
-        <p>각 지점에 소속된 조합원 수</p>
-        <div class="chart-wrap"><canvas id="membersChart"></canvas></div>
-      </article>
-
-      <article class="card">
-        <h2>지점별 연체 건수</h2>
-        <p>대출 상태가 '연체'인 계좌 수</p>
-        <div class="chart-wrap"><canvas id="overdueChart"></canvas></div>
-      </article>
-
-      <article class="card wide">
-        <h2>지점별 예적금·대출 총액</h2>
-        <p>지점별 잔액 및 대출원금 합계 · 단위: 억원</p>
-        <div class="chart-wrap"><canvas id="amountChart"></canvas></div>
-      </article>
+      <article class="card"><h2>지점별 조합원 수</h2><p>각 지점에 소속된 조합원 수</p><div class="chart-wrap"><canvas id="membersChart"></canvas></div></article>
+      <article class="card"><h2>지점별 연체 건수</h2><p>대출 상태가 '연체'인 계좌 수</p><div class="chart-wrap"><canvas id="overdueChart"></canvas></div></article>
+      <article class="card wide"><h2>지점별 예적금·대출 총액</h2><p>지점별 잔액 및 대출원금 합계 · 단위: 억원</p><div class="chart-wrap"><canvas id="amountChart"></canvas></div></article>
     </section>
 
     <section class="table-card">
-      <div class="table-head">
-        <h2>지점별 상세 현황</h2>
-        <p>차트에 사용된 최신 집계 결과</p>
-      </div>
+      <div class="table-head"><h2>지점별 상세 현황</h2><p>차트에 사용된 최신 집계 결과</p></div>
       <div class="table-scroll">
         <table>
-          <thead>
-            <tr>
-              <th>지점</th>
-              <th>조합원 수</th>
-              <th>예적금 총액</th>
-              <th>대출 총액</th>
-              <th>연체 건수</th>
-            </tr>
-          </thead>
+          <thead><tr><th>지점</th><th>조합원 수</th><th>예적금 총액</th><th>대출 총액</th><th>연체 건수</th></tr></thead>
           <tbody id="branchTableBody"></tbody>
         </table>
       </div>
     </section>
 
+    <section class="management-card" aria-labelledby="managementTitle">
+      <div class="management-header">
+        <div>
+          <h2 id="managementTitle">데이터 관리</h2>
+          <p>조합원, 예적금, 대출 데이터를 조회하고 등록·수정·삭제합니다.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="관리 메뉴">
+          <button class="tab active" data-entity="members" type="button">조합원</button>
+          <button class="tab" data-entity="deposits" type="button">예적금</button>
+          <button class="tab" data-entity="loans" type="button">대출</button>
+        </div>
+      </div>
+      <div class="manage-toolbar">
+        <div class="left">
+          <input id="manageSearch" type="search" placeholder="이름, 전화번호, 계좌번호 등 검색" disabled />
+          <span id="manageMeta" class="manage-meta">연결 후 사용할 수 있습니다.</span>
+        </div>
+        <button id="addBtn" type="button" disabled>+ 신규 등록</button>
+      </div>
+      <div class="table-scroll">
+        <table id="manageTable"><thead id="manageHead"></thead><tbody id="manageBody"><tr><td class="empty">Supabase 연결 후 데이터를 불러옵니다.</td></tr></tbody></table>
+      </div>
+    </section>
+
     <div class="footer-note">
-      ※ 브라우저에서는 Publishable Key 사용을 권장합니다. 운영 공개 전에는 RLS를 활성화하고,
-      필요한 테이블만 Data API에 노출한 뒤 최소한의 SELECT 권한과 정책을 적용하세요.
+      ※ 브라우저에서 CRUD를 허용하려면 Supabase Data API 권한과 RLS 정책을 신중하게 구성해야 합니다. 운영 환경에서는 익명 사용자에게 광범위한 INSERT/UPDATE/DELETE 권한을 부여하지 않는 것을 권장합니다.
     </div>
   </div>
+
+  <dialog id="editDialog">
+    <form id="editForm" method="dialog">
+      <div class="modal-head">
+        <h3 id="modalTitle">데이터 등록</h3>
+        <button id="closeModalBtn" class="icon-btn" type="button" aria-label="닫기">닫기</button>
+      </div>
+      <div id="formFields" class="modal-body form-grid"></div>
+      <div class="modal-actions">
+        <button id="cancelBtn" class="secondary" type="button">취소</button>
+        <button id="saveBtn" type="submit">저장</button>
+      </div>
+    </form>
+  </dialog>
 
   <script>
     const { createClient } = supabase;
     let db = null;
+    let charts = [];
+    let currentEntity = "members";
+    let editingId = null;
+    let state = { branches: [], members: [], deposits: [], loans: [] };
 
     const fmtInt = new Intl.NumberFormat("ko-KR");
     const fmtAmount = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
+    const fmtWon = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 });
 
-    let charts = [];
+    const ENTITY_CONFIG = {
+      members: {
+        label: "조합원",
+        table: "members",
+        id: "member_id",
+        columns: [
+          ["member_id","회원번호"],["name","이름"],["birth_date","생년월일"],["gender","성별"],["join_date","가입일"],["branch_id","지점"],["phone","전화번호"]
+        ]
+      },
+      deposits: {
+        label: "예적금",
+        table: "deposit_accounts",
+        id: "account_id",
+        columns: [
+          ["account_id","계좌번호"],["member_id","조합원"],["branch_id","지점"],["account_type","계좌유형"],["open_date","개설일"],["balance","잔액"],["interest_rate","금리"]
+        ]
+      },
+      loans: {
+        label: "대출",
+        table: "loans",
+        id: "loan_id",
+        columns: [
+          ["loan_id","대출번호"],["member_id","조합원"],["branch_id","지점"],["loan_type","대출유형"],["loan_amount","대출금액"],["interest_rate","금리"],["start_date","시작일"],["due_date","만기일"],["status","상태"]
+        ]
+      }
+    };
 
-    function toNumber(v) {
-      const n = Number(v);
-      return Number.isFinite(n) ? n : 0;
+    function toNumber(v){ const n = Number(v); return Number.isFinite(n) ? n : 0; }
+    function wonToEok(v){ return toNumber(v) / 100000000; }
+    function todayString(){ return new Date().toLocaleDateString("sv-SE"); }
+    function branchName(id){ return state.branches.find(b => b.branch_id === Number(id))?.branch_name || `지점 ${id ?? "-"}`; }
+    function memberName(id){ const m = state.members.find(x => x.member_id === Number(id)); return m ? `${m.name} (${m.member_id})` : `회원 ${id ?? "-"}`; }
+
+    function escapeHtml(value){
+      return String(value ?? "")
+        .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
     }
 
-    function wonToEok(v) {
-      return toNumber(v) / 100000000;
+    function setStatus(text){ document.getElementById("status").textContent = text; }
+    function clearNotices(){
+      document.getElementById("errorBox").style.display = "none";
+      document.getElementById("successBox").style.display = "none";
     }
-
-    function setStatus(text) {
-      document.getElementById("status").textContent = text;
-    }
-
-    function showError(message) {
+    function showError(message){
       const box = document.getElementById("errorBox");
-      box.textContent = message;
-      box.style.display = "block";
+      box.textContent = message; box.style.display = "block";
+      document.getElementById("successBox").style.display = "none";
+      box.scrollIntoView({ behavior:"smooth", block:"nearest" });
     }
-
-    function clearError() {
+    function showSuccess(message){
+      const box = document.getElementById("successBox");
+      box.textContent = message; box.style.display = "block";
       document.getElementById("errorBox").style.display = "none";
     }
+    function destroyCharts(){ charts.forEach(c => c.destroy()); charts = []; }
 
-    function destroyCharts() {
-      charts.forEach(c => c.destroy());
-      charts = [];
-    }
-
-    function normalizeUrl(value) {
+    function normalizeUrl(value){
       const raw = String(value || "").trim().replace(/\/+$/, "");
       if (!raw) throw new Error("Supabase URL을 입력해주세요.");
-
       let parsed;
-      try {
-        parsed = new URL(raw);
-      } catch {
-        throw new Error("Supabase URL 형식이 올바르지 않습니다.");
-      }
-
-      if (!['http:', 'https:'].includes(parsed.protocol)) {
-        throw new Error("Supabase URL은 http:// 또는 https:// 형식이어야 합니다.");
-      }
+      try { parsed = new URL(raw); } catch { throw new Error("Supabase URL 형식이 올바르지 않습니다."); }
+      if (!["http:","https:"].includes(parsed.protocol)) throw new Error("Supabase URL은 http:// 또는 https:// 형식이어야 합니다.");
       return raw;
     }
 
-    function looksLikePrivilegedKey(key) {
+    function looksLikePrivilegedKey(key){
       const value = String(key || "").trim();
       if (value.startsWith("sb_secret_")) return true;
-
       const parts = value.split(".");
-      if (parts.length === 3) {
-        try {
-          const normalized = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-          const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
-          const payload = JSON.parse(atob(padded));
-          return payload?.role === "service_role";
-        } catch {
-          return false;
-        }
+      if (parts.length === 3){
+        try{
+          const normalized = parts[1].replace(/-/g,"+").replace(/_/g,"/");
+          const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4,"=");
+          return JSON.parse(atob(padded))?.role === "service_role";
+        }catch{ return false; }
       }
       return false;
     }
 
-    function createSupabaseClientFromInputs() {
-      clearError();
+    function createSupabaseClientFromInputs(){
+      clearNotices();
       const url = normalizeUrl(document.getElementById("supabaseUrl").value);
       const key = document.getElementById("supabaseKey").value.trim();
-
       if (!key) throw new Error("Publishable/Anon Key를 입력해주세요.");
-      if (looksLikePrivilegedKey(key)) {
-        throw new Error("service_role 또는 secret key는 브라우저에서 사용하면 안 됩니다. Publishable/Anon Key를 입력해주세요.");
-      }
-
-      db = createClient(url, key, {
-        auth: { persistSession: false, autoRefreshToken: false }
-      });
+      if (looksLikePrivilegedKey(key)) throw new Error("service_role 또는 secret key는 브라우저에서 사용하면 안 됩니다. Publishable/Anon Key를 입력해주세요.");
+      db = createClient(url,key,{ auth:{ persistSession:false, autoRefreshToken:false } });
       document.getElementById("refreshBtn").disabled = false;
     }
 
-    async function connectAndFetch() {
-      const connectBtn = document.getElementById("connectBtn");
-      connectBtn.disabled = true;
-      setStatus("Supabase 연결 중…");
-
-      try {
-        createSupabaseClientFromInputs();
-        await fetchAllData();
-      } catch (err) {
-        console.error(err);
-        db = null;
-        document.getElementById("refreshBtn").disabled = true;
-        showError(err?.message || String(err));
-        setStatus("연결 실패");
-      } finally {
-        connectBtn.disabled = false;
-      }
-    }
-
-    function formatSupabaseError(err) {
+    function formatSupabaseError(err, action="처리"){
       const code = err?.code ? ` [${err.code}]` : "";
       const message = err?.message || String(err);
-
-      if (err?.code === "42501") {
-        return `Supabase 권한 오류${code}: ${message} · 해당 테이블이 Data API에 노출되어 있는지, anon 역할에 SELECT 권한이 있는지, RLS SELECT 정책이 허용되어 있는지 확인해주세요.`;
-      }
-      return `Supabase 데이터를 불러오지 못했습니다${code}: ${message}`;
+      if (err?.code === "42501") return `Supabase 권한 오류${code}: ${message} · ${action} 권한과 RLS 정책을 확인해주세요.`;
+      if (err?.code === "23503") return `참조 무결성 오류${code}: 연결된 데이터가 있어 처리할 수 없습니다. 관련 예적금·대출·거래 데이터를 먼저 확인해주세요.`;
+      if (err?.code === "23505") return `중복 키 오류${code}: 다른 사용자가 같은 번호를 먼저 등록했을 수 있습니다. 새로고침 후 다시 시도해주세요.`;
+      return `Supabase ${action} 실패${code}: ${message}`;
     }
 
-    async function fetchAllData() {
-      clearError();
-      if (!db) {
-        showError("먼저 Supabase URL과 Key를 입력하고 ‘연결 및 조회’를 눌러주세요.");
-        setStatus("연결 정보 입력 필요");
-        return;
-      }
+    async function connectAndFetch(){
+      const btn = document.getElementById("connectBtn");
+      btn.disabled = true; setStatus("Supabase 연결 중…");
+      try{
+        createSupabaseClientFromInputs();
+        await fetchAllData();
+        document.getElementById("manageSearch").disabled = false;
+        document.getElementById("addBtn").disabled = false;
+      }catch(err){
+        console.error(err); db = null;
+        document.getElementById("refreshBtn").disabled = true;
+        document.getElementById("manageSearch").disabled = true;
+        document.getElementById("addBtn").disabled = true;
+        showError(err?.message || String(err)); setStatus("연결 실패");
+      }finally{ btn.disabled = false; }
+    }
 
+    async function fetchAllData(){
+      clearNotices();
+      if (!db){ showError("먼저 Supabase URL과 Key를 입력하고 ‘연결 및 조회’를 눌러주세요."); setStatus("연결 정보 입력 필요"); return; }
       setStatus("최신 데이터 조회 중…");
       document.getElementById("refreshBtn").disabled = true;
-
-      try {
-        const [branchesRes, membersRes, depositsRes, loansRes] = await Promise.all([
+      try{
+        const [branchesRes,membersRes,depositsRes,loansRes] = await Promise.all([
           db.from("branches").select("branch_id, branch_name").order("branch_id"),
-          db.from("members").select("member_id, branch_id"),
-          db.from("deposit_accounts").select("account_id, branch_id, balance"),
-          db.from("loans").select("loan_id, branch_id, loan_amount, status")
+          db.from("members").select("member_id, name, birth_date, gender, join_date, branch_id, phone").order("member_id"),
+          db.from("deposit_accounts").select("account_id, member_id, branch_id, account_type, open_date, balance, interest_rate").order("account_id"),
+          db.from("loans").select("loan_id, member_id, branch_id, loan_type, loan_amount, interest_rate, start_date, due_date, status").order("loan_id")
         ]);
-
-        const results = [branchesRes, membersRes, depositsRes, loansRes];
+        const results = [branchesRes,membersRes,depositsRes,loansRes];
         const failed = results.find(r => r.error);
         if (failed) throw failed.error;
-
-        renderDashboard(
-          branchesRes.data || [],
-          membersRes.data || [],
-          depositsRes.data || [],
-          loansRes.data || []
-        );
-
+        state = {
+          branches: branchesRes.data || [], members: membersRes.data || [],
+          deposits: depositsRes.data || [], loans: loansRes.data || []
+        };
+        renderDashboard(state.branches,state.members,state.deposits,state.loans);
+        renderManageTable();
         setStatus("최종 조회 " + new Date().toLocaleString("ko-KR"));
-      } catch (err) {
-        console.error(err);
-        showError(formatSupabaseError(err));
-        setStatus("조회 실패");
-      } finally {
-        document.getElementById("refreshBtn").disabled = !db;
-      }
+      }catch(err){
+        console.error(err); showError(formatSupabaseError(err,"조회")); setStatus("조회 실패");
+      }finally{ document.getElementById("refreshBtn").disabled = !db; }
     }
 
-    function renderDashboard(branches, members, deposits, loans) {
+    function renderDashboard(branches,members,deposits,loans){
       const rows = branches.map(branch => {
         const branchId = branch.branch_id;
-        const memberCount = members.filter(m => m.branch_id === branchId).length;
-        const depositTotal = deposits
-          .filter(d => d.branch_id === branchId)
-          .reduce((sum, d) => sum + toNumber(d.balance), 0);
-        const loanTotal = loans
-          .filter(l => l.branch_id === branchId)
-          .reduce((sum, l) => sum + toNumber(l.loan_amount), 0);
-        const overdueCount = loans
-          .filter(l => l.branch_id === branchId && l.status === "연체").length;
-
         return {
-          branchId,
-          branchName: branch.branch_name,
-          memberCount,
-          depositTotal,
-          loanTotal,
-          overdueCount
+          branchId, branchName:branch.branch_name,
+          memberCount:members.filter(m => m.branch_id === branchId).length,
+          depositTotal:deposits.filter(d => d.branch_id === branchId).reduce((s,d) => s + toNumber(d.balance),0),
+          loanTotal:loans.filter(l => l.branch_id === branchId).reduce((s,l) => s + toNumber(l.loan_amount),0),
+          overdueCount:loans.filter(l => l.branch_id === branchId && l.status === "연체").length
         };
       });
-
-      const totalMembers = rows.reduce((s, r) => s + r.memberCount, 0);
-      const totalDeposits = rows.reduce((s, r) => s + r.depositTotal, 0);
-      const totalLoans = rows.reduce((s, r) => s + r.loanTotal, 0);
-      const totalOverdue = rows.reduce((s, r) => s + r.overdueCount, 0);
-
-      document.getElementById("totalMembers").textContent = fmtInt.format(totalMembers);
-      document.getElementById("totalDeposits").textContent = fmtAmount.format(wonToEok(totalDeposits));
-      document.getElementById("totalLoans").textContent = fmtAmount.format(wonToEok(totalLoans));
-      document.getElementById("totalOverdue").textContent = fmtInt.format(totalOverdue);
-
-      renderTable(rows);
-      renderCharts(rows);
+      document.getElementById("totalMembers").textContent = fmtInt.format(rows.reduce((s,r)=>s+r.memberCount,0));
+      document.getElementById("totalDeposits").textContent = fmtAmount.format(wonToEok(rows.reduce((s,r)=>s+r.depositTotal,0)));
+      document.getElementById("totalLoans").textContent = fmtAmount.format(wonToEok(rows.reduce((s,r)=>s+r.loanTotal,0)));
+      document.getElementById("totalOverdue").textContent = fmtInt.format(rows.reduce((s,r)=>s+r.overdueCount,0));
+      renderBranchTable(rows); renderCharts(rows);
     }
 
-    function renderTable(rows) {
+    function renderBranchTable(rows){
       document.getElementById("branchTableBody").innerHTML = rows.map(r => `
-        <tr>
-          <td><span class="badge">${escapeHtml(r.branchName)}</span></td>
-          <td>${fmtInt.format(r.memberCount)}명</td>
-          <td>${fmtAmount.format(wonToEok(r.depositTotal))}억원</td>
-          <td>${fmtAmount.format(wonToEok(r.loanTotal))}억원</td>
-          <td>${fmtInt.format(r.overdueCount)}건</td>
-        </tr>
-      `).join("");
+        <tr><td><span class="badge">${escapeHtml(r.branchName)}</span></td><td>${fmtInt.format(r.memberCount)}명</td>
+        <td>${fmtAmount.format(wonToEok(r.depositTotal))}억원</td><td>${fmtAmount.format(wonToEok(r.loanTotal))}억원</td><td>${fmtInt.format(r.overdueCount)}건</td></tr>`).join("");
     }
 
-    function renderCharts(rows) {
+    function renderCharts(rows){
       destroyCharts();
-
       const labels = rows.map(r => r.branchName);
-
-      charts.push(new Chart(document.getElementById("membersChart"), {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [{
-            label: "조합원 수",
-            data: rows.map(r => r.memberCount),
-            backgroundColor: "rgba(15, 122, 90, .72)",
-            borderRadius: 8
-          }]
-        },
-        options: baseOptions("명")
-      }));
-
-      charts.push(new Chart(document.getElementById("overdueChart"), {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [{
-            label: "연체 건수",
-            data: rows.map(r => r.overdueCount),
-            backgroundColor: "rgba(182, 60, 60, .72)",
-            borderRadius: 8
-          }]
-        },
-        options: baseOptions("건")
-      }));
-
-      charts.push(new Chart(document.getElementById("amountChart"), {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [
-            {
-              label: "예적금 총액",
-              data: rows.map(r => wonToEok(r.depositTotal)),
-              backgroundColor: "rgba(15, 122, 90, .72)",
-              borderRadius: 8
-            },
-            {
-              label: "대출 총액",
-              data: rows.map(r => wonToEok(r.loanTotal)),
-              backgroundColor: "rgba(45, 91, 161, .72)",
-              borderRadius: 8
-            }
-          ]
-        },
-        options: baseOptions("억원")
-      }));
+      charts.push(new Chart(document.getElementById("membersChart"),{type:"bar",data:{labels,datasets:[{label:"조합원 수",data:rows.map(r=>r.memberCount),backgroundColor:"rgba(15, 122, 90, .72)",borderRadius:8}]},options:baseOptions("명")}));
+      charts.push(new Chart(document.getElementById("overdueChart"),{type:"bar",data:{labels,datasets:[{label:"연체 건수",data:rows.map(r=>r.overdueCount),backgroundColor:"rgba(182, 60, 60, .72)",borderRadius:8}]},options:baseOptions("건")}));
+      charts.push(new Chart(document.getElementById("amountChart"),{type:"bar",data:{labels,datasets:[
+        {label:"예적금 총액",data:rows.map(r=>wonToEok(r.depositTotal)),backgroundColor:"rgba(15, 122, 90, .72)",borderRadius:8},
+        {label:"대출 총액",data:rows.map(r=>wonToEok(r.loanTotal)),backgroundColor:"rgba(45, 91, 161, .72)",borderRadius:8}
+      ]},options:baseOptions("억원")}));
     }
 
-    function baseOptions(unit) {
+    function baseOptions(unit){
+      return {responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},plugins:{legend:{position:"top"},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmtAmount.format(ctx.parsed.y)}${unit}`}}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,ticks:{callback:value=>fmtAmount.format(value)+unit}}}};
+    }
+
+    function displayValue(entity,key,value){
+      if (key === "branch_id") return branchName(value);
+      if (key === "member_id" && entity !== "members") return memberName(value);
+      if (["balance","loan_amount"].includes(key)) return `${fmtWon.format(toNumber(value))}원`;
+      if (key === "interest_rate") return `${toNumber(value).toFixed(2)}%`;
+      if (key === "gender") return value === "F" ? "여성" : value === "M" ? "남성" : value ?? "";
+      return value ?? "";
+    }
+
+    function renderManageTable(){
+      const config = ENTITY_CONFIG[currentEntity];
+      const query = document.getElementById("manageSearch").value.trim().toLowerCase();
+      const source = state[currentEntity] || [];
+      const rows = source.filter(row => {
+        if (!query) return true;
+        const expanded = config.columns.map(([key]) => displayValue(currentEntity,key,row[key])).join(" ") + " " + Object.values(row).join(" ");
+        return expanded.toLowerCase().includes(query);
+      });
+
+      document.getElementById("manageMeta").textContent = `${config.label} ${rows.length}건 / 전체 ${source.length}건`;
+      document.getElementById("manageHead").innerHTML = `<tr>${config.columns.map(([,label])=>`<th>${escapeHtml(label)}</th>`).join("")}<th>관리</th></tr>`;
+      const body = document.getElementById("manageBody");
+      if (!rows.length){
+        body.innerHTML = `<tr><td colspan="${config.columns.length+1}" class="empty">표시할 데이터가 없습니다.</td></tr>`;
+        return;
+      }
+      body.innerHTML = rows.map(row => `
+        <tr>${config.columns.map(([key])=>`<td>${escapeHtml(displayValue(currentEntity,key,row[key]))}</td>`).join("")}
+        <td><div class="row-actions"><button class="secondary mini" type="button" data-action="edit" data-id="${row[config.id]}">수정</button><button class="danger mini" type="button" data-action="delete" data-id="${row[config.id]}">삭제</button></div></td></tr>`).join("");
+    }
+
+    function branchOptions(selected){
+      return state.branches.map(b=>`<option value="${b.branch_id}" ${Number(selected)===b.branch_id?"selected":""}>${escapeHtml(b.branch_name)} (${b.branch_id})</option>`).join("");
+    }
+    function memberOptions(selected){
+      return state.members.map(m=>`<option value="${m.member_id}" ${Number(selected)===m.member_id?"selected":""}>${escapeHtml(m.name)} (${m.member_id})</option>`).join("");
+    }
+    function fieldHtml(label,name,type="text",value="",opts={}){
+      const required = opts.required === false ? "" : "required";
+      const extra = opts.extra || "";
+      return `<div class="field ${opts.wide?"wide":""}"><label for="f_${name}">${escapeHtml(label)}</label><input id="f_${name}" name="${name}" type="${type}" value="${escapeHtml(value ?? "")}" ${required} ${extra}/>${opts.help?`<div class="form-help">${escapeHtml(opts.help)}</div>`:""}</div>`;
+    }
+    function selectHtml(label,name,options,opts={}){
+      return `<div class="field ${opts.wide?"wide":""}"><label for="f_${name}">${escapeHtml(label)}</label><select id="f_${name}" name="${name}" required>${options}</select></div>`;
+    }
+
+    function openEditor(mode,id=null){
+      if (!db) return showError("먼저 Supabase에 연결해주세요.");
+      const config = ENTITY_CONFIG[currentEntity];
+      editingId = mode === "edit" ? Number(id) : null;
+      const row = editingId === null ? {} : state[currentEntity].find(x => Number(x[config.id]) === editingId) || {};
+      document.getElementById("modalTitle").textContent = `${config.label} ${mode === "edit" ? "수정" : "등록"}`;
+      const fields = document.getElementById("formFields");
+
+      if (currentEntity === "members"){
+        fields.innerHTML = [
+          fieldHtml("이름","name","text",row.name || "",{wide:true}),
+          fieldHtml("생년월일","birth_date","date",row.birth_date || ""),
+          selectHtml("성별","gender",`<option value="F" ${row.gender==="F"?"selected":""}>여성</option><option value="M" ${row.gender==="M"?"selected":""}>남성</option>`),
+          fieldHtml("가입일","join_date","date",row.join_date || todayString()),
+          selectHtml("지점","branch_id",branchOptions(row.branch_id || state.branches[0]?.branch_id)),
+          fieldHtml("전화번호","phone","tel",row.phone || "",{wide:true})
+        ].join("");
+      } else if (currentEntity === "deposits"){
+        fields.innerHTML = [
+          selectHtml("조합원","member_id",memberOptions(row.member_id || state.members[0]?.member_id)),
+          selectHtml("지점","branch_id",branchOptions(row.branch_id || state.members[0]?.branch_id || state.branches[0]?.branch_id)),
+          selectHtml("계좌유형","account_type",["보통예금","정기예금","자유적금","정기적금"].map(v=>`<option value="${v}" ${row.account_type===v?"selected":""}>${v}</option>`).join("")),
+          fieldHtml("개설일","open_date","date",row.open_date || todayString()),
+          fieldHtml("잔액(원)","balance","number",row.balance ?? 0,{extra:'min="0" step="1"'}),
+          fieldHtml("금리(%)","interest_rate","number",row.interest_rate ?? "",{extra:'min="0" max="100" step="0.01"'})
+        ].join("");
+      } else {
+        fields.innerHTML = [
+          selectHtml("조합원","member_id",memberOptions(row.member_id || state.members[0]?.member_id)),
+          selectHtml("지점","branch_id",branchOptions(row.branch_id || state.members[0]?.branch_id || state.branches[0]?.branch_id)),
+          fieldHtml("대출유형","loan_type","text",row.loan_type || "",{wide:true}),
+          fieldHtml("대출금액(원)","loan_amount","number",row.loan_amount ?? 0,{extra:'min="0" step="1"'}),
+          fieldHtml("금리(%)","interest_rate","number",row.interest_rate ?? "",{extra:'min="0" max="100" step="0.01"'}),
+          fieldHtml("시작일","start_date","date",row.start_date || todayString()),
+          fieldHtml("만기일","due_date","date",row.due_date || ""),
+          selectHtml("상태","status",["정상","연체","상환완료"].map(v=>`<option value="${v}" ${row.status===v?"selected":""}>${v}</option>`).join(""),{wide:true})
+        ].join("");
+      }
+
+      const memberSelect = document.getElementById("f_member_id");
+      const branchSelect = document.getElementById("f_branch_id");
+      if (memberSelect && branchSelect){
+        memberSelect.addEventListener("change",()=>{
+          const m = state.members.find(x=>x.member_id===Number(memberSelect.value));
+          if (m) branchSelect.value = String(m.branch_id);
+        });
+      }
+      document.getElementById("editDialog").showModal();
+    }
+
+    async function getNextId(config){
+      const { data,error } = await db.from(config.table).select(config.id).order(config.id,{ascending:false}).limit(1);
+      if (error) throw error;
+      return (data?.[0]?.[config.id] ?? 0) + 1;
+    }
+
+    function formPayload(){
+      const form = new FormData(document.getElementById("editForm"));
+      const v = name => String(form.get(name) ?? "").trim();
+      if (currentEntity === "members") return {
+        name:v("name"), birth_date:v("birth_date"), gender:v("gender"), join_date:v("join_date"), branch_id:Number(v("branch_id")), phone:v("phone")
+      };
+      if (currentEntity === "deposits") return {
+        member_id:Number(v("member_id")), branch_id:Number(v("branch_id")), account_type:v("account_type"), open_date:v("open_date"), balance:Number(v("balance")), interest_rate:Number(v("interest_rate"))
+      };
       return {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: "index", intersect: false },
-        plugins: {
-          legend: { position: "top" },
-          tooltip: {
-            callbacks: {
-              label: ctx => `${ctx.dataset.label}: ${fmtAmount.format(ctx.parsed.y)}${unit}`
-            }
-          }
-        },
-        scales: {
-          x: { grid: { display: false } },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              callback: value => fmtAmount.format(value) + unit
-            }
-          }
-        }
+        member_id:Number(v("member_id")), branch_id:Number(v("branch_id")), loan_type:v("loan_type"), loan_amount:Number(v("loan_amount")), interest_rate:Number(v("interest_rate")), start_date:v("start_date"), due_date:v("due_date"), status:v("status")
       };
     }
 
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+    async function saveEditor(event){
+      event.preventDefault();
+      if (!db) return showError("먼저 Supabase에 연결해주세요.");
+      const config = ENTITY_CONFIG[currentEntity];
+      const saveBtn = document.getElementById("saveBtn");
+      saveBtn.disabled = true;
+      try{
+        const payload = formPayload();
+        if (currentEntity === "loans" && payload.due_date && payload.start_date && payload.due_date < payload.start_date) throw new Error("만기일은 시작일 이후여야 합니다.");
+        let result;
+        if (editingId === null){
+          payload[config.id] = await getNextId(config);
+          result = await db.from(config.table).insert(payload).select();
+        } else {
+          result = await db.from(config.table).update(payload).eq(config.id,editingId).select();
+        }
+        if (result.error) throw result.error;
+        document.getElementById("editDialog").close();
+        const action = editingId === null ? "등록" : "수정";
+        await fetchAllData();
+        showSuccess(`${config.label} 데이터가 ${action}되었습니다.`);
+      }catch(err){
+        console.error(err);
+        showError(err?.code ? formatSupabaseError(err,editingId===null?"등록":"수정") : (err?.message || String(err)));
+      }finally{ saveBtn.disabled = false; }
     }
 
-    document.getElementById("connectBtn").addEventListener("click", connectAndFetch);
-    document.getElementById("refreshBtn").addEventListener("click", fetchAllData);
-    document.getElementById("toggleKeyBtn").addEventListener("click", () => {
+    async function deleteRow(id){
+      if (!db) return showError("먼저 Supabase에 연결해주세요.");
+      const config = ENTITY_CONFIG[currentEntity];
+      const row = state[currentEntity].find(x=>Number(x[config.id])===Number(id));
+      if (!row) return;
+      const label = currentEntity === "members" ? `${row.name} (${id})` : currentEntity === "deposits" ? `계좌 ${id}` : `대출 ${id}`;
+      if (!confirm(`${label} 데이터를 삭제하시겠습니까?\n삭제 후 되돌릴 수 없습니다.`)) return;
+      try{
+        const { error } = await db.from(config.table).delete().eq(config.id,Number(id));
+        if (error) throw error;
+        await fetchAllData();
+        showSuccess(`${config.label} 데이터가 삭제되었습니다.`);
+      }catch(err){
+        console.error(err); showError(formatSupabaseError(err,"삭제"));
+      }
+    }
+
+    document.getElementById("connectBtn").addEventListener("click",connectAndFetch);
+    document.getElementById("refreshBtn").addEventListener("click",fetchAllData);
+    document.getElementById("toggleKeyBtn").addEventListener("click",()=>{
       const input = document.getElementById("supabaseKey");
       const button = document.getElementById("toggleKeyBtn");
       const show = input.type === "password";
       input.type = show ? "text" : "password";
       button.textContent = show ? "Key 숨기기" : "Key 보기";
-      button.setAttribute("aria-pressed", String(show));
+      button.setAttribute("aria-pressed",String(show));
     });
-    document.getElementById("supabaseKey").addEventListener("keydown", event => {
-      if (event.key === "Enter") connectAndFetch();
+    document.getElementById("supabaseKey").addEventListener("keydown",event=>{ if(event.key==="Enter") connectAndFetch(); });
+    document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+      currentEntity = btn.dataset.entity;
+      document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===btn));
+      document.getElementById("manageSearch").value = "";
+      renderManageTable();
+    }));
+    document.getElementById("manageSearch").addEventListener("input",renderManageTable);
+    document.getElementById("addBtn").addEventListener("click",()=>openEditor("add"));
+    document.getElementById("manageBody").addEventListener("click",event=>{
+      const btn = event.target.closest("button[data-action]");
+      if (!btn) return;
+      if (btn.dataset.action === "edit") openEditor("edit",btn.dataset.id);
+      if (btn.dataset.action === "delete") deleteRow(btn.dataset.id);
     });
-    window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("editForm").addEventListener("submit",saveEditor);
+    document.getElementById("cancelBtn").addEventListener("click",()=>document.getElementById("editDialog").close());
+    document.getElementById("closeModalBtn").addEventListener("click",()=>document.getElementById("editDialog").close());
+    document.getElementById("editDialog").addEventListener("click",event=>{
+      if (event.target === event.currentTarget) event.currentTarget.close();
+    });
+    window.addEventListener("DOMContentLoaded",()=>{
       setStatus("연결 정보 입력 필요");
       document.getElementById("supabaseUrl").focus();
+      renderManageTable();
     });
   </script>
 </body>
