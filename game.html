@@ -181,22 +181,23 @@ canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13
 .rank-title{margin-top:5px;font-size:24px;font-weight:950;letter-spacing:-.04em}
 .rank-sub{margin-top:5px;color:#cfe5ff;font-size:12px;line-height:1.55}
 .rank-list{display:grid;gap:7px;margin:14px 0 18px}
-.rank-row{display:grid;grid-template-columns:42px 1fr 100px 80px;gap:8px;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.08);font-size:13px}
+.rank-row{display:grid;grid-template-columns:42px 1fr 100px 80px 58px;gap:8px;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.08);font-size:13px}
 .rank-row.top3{background:rgba(255,215,90,.14);border:1px solid rgba(255,215,90,.2)}
 .rank-pos{font-weight:950;text-align:center}.rank-name{font-weight:950;letter-spacing:.08em}.rank-score{text-align:right;font-weight:950;font-variant-numeric:tabular-nums}.rank-stage{text-align:right;color:#cfe5ff;font-size:12px}
 .rank-empty{padding:22px;text-align:center;color:#cfe5ff;background:rgba(255,255,255,.07);border-radius:12px}
 .rank-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
 .rank-actions button{min-width:130px;min-height:44px;border:0;border-radius:12px;font-weight:900;padding:9px 15px}
 #rankStart,#rankSubmitBtn{background:#fff;color:#0b4d91}
+.rank-delete{min-width:0!important;min-height:34px!important;padding:6px 9px!important;border-radius:9px!important;background:#a93636!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;font-size:11px;font-weight:900}
 #rankRetry,#rankCancel{background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.24)}
 .rank-form{display:grid;gap:12px;margin:16px 0}
 .rank-score-card{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .rank-score-card div{padding:12px;border-radius:12px;background:rgba(255,255,255,.08);text-align:center}
 .rank-score-card small{display:block;color:#acd4ff;font-size:11px;margin-bottom:4px}.rank-score-card b{font-size:18px}
-.rank-input{display:flex;gap:8px;justify-content:center}
+.rank-input{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .rank-input input{width:150px;height:50px;border:2px solid rgba(255,255,255,.32);border-radius:12px;background:#fff;color:#0b3158;font-size:24px;font-weight:950;text-align:center;text-transform:uppercase;letter-spacing:.18em;outline:none}
 .rank-status{min-height:20px;text-align:center;color:#cfe5ff;font-size:12px}
-@media(max-width:700px){.rank-overlay{padding:10px}.rank-panel{padding:18px 13px}.rank-row{grid-template-columns:36px 1fr 82px}.rank-stage{display:none}.rank-score-card{grid-template-columns:1fr 1fr}.rank-score-card div:last-child{grid-column:1/-1}}
+@media(max-width:700px){.rank-overlay{padding:10px}.rank-panel{padding:18px 13px}.rank-row{grid-template-columns:36px 1fr 82px 54px}.rank-stage{display:none}.rank-score-card{grid-template-columns:1fr 1fr}.rank-score-card div:last-child{grid-column:1/-1}}
 
 </style>
 </head>
@@ -241,8 +242,8 @@ canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13
               <div><small>STAGE</small><b id="rankFinalStage">1/5</b></div>
               <div><small>RESULT</small><b id="rankFinalResult">GAME OVER</b></div>
             </div>
-            <div class="rank-input"><input id="rankInitials" maxlength="3" inputmode="text" autocomplete="off" aria-label="랭킹 이니셜" placeholder="AAA"></div>
-            <div id="rankStatus" class="rank-status">영문/숫자 1~3자로 이니셜을 입력하세요.</div>
+            <div class="rank-input"><input id="rankInitials" maxlength="3" inputmode="text" autocomplete="off" aria-label="랭킹 이니셜" placeholder="AAA"><input id="rankPassword" type="password" maxlength="4" inputmode="numeric" autocomplete="new-password" aria-label="랭킹 삭제 비밀번호" placeholder="비밀번호 4자리"></div>
+            <div id="rankStatus" class="rank-status">이니셜과 삭제용 숫자 비밀번호 4자리를 입력하세요.</div>
           </div>
           <div class="rank-actions">
             <button type="button" id="rankStart">게임 시작 ▶</button>
@@ -417,6 +418,7 @@ canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13
   const rankSub = document.getElementById("rankSub");
   const rankEntry = document.getElementById("rankEntry");
   const rankInitials = document.getElementById("rankInitials");
+  const rankPassword = document.getElementById("rankPassword");
   const rankStatus = document.getElementById("rankStatus");
   const rankStart = document.getElementById("rankStart");
   const rankSubmitBtn = document.getElementById("rankSubmitBtn");
@@ -433,6 +435,7 @@ canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13
   const SUPABASE_URL = "https://nzhaiurqbnwbhiuplwcs.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_UvIWU2baekjzme_5mNXDkw_DmsfFuX8";
   const RANK_TABLE = "game_rankings";
+  const RANK_FUNCTION = `${SUPABASE_URL}/functions/v1/game-ranking-admin`;
   let rankMode = "intro";
   let rankSubmittedForRun = false;
   let rankPendingResult = "game_over";
@@ -458,10 +461,34 @@ canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13
     return text ? JSON.parse(text) : null;
   }
 
+  async function rankFunction(body){
+    const res = await fetch(RANK_FUNCTION,{
+      method:"POST",
+      headers:{"apikey":SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json"},
+      body:JSON.stringify(body)
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data?.error || `Ranking API ${res.status}`);
+    return data;
+  }
+
+  async function deleteRanking(id, initials){
+    const password=prompt(`${initials} 기록을 삭제하려면 비밀번호 4자리를 입력하세요.`);
+    if(password===null) return;
+    if(!/^\d{4}$/.test(password)){ alert("비밀번호는 숫자 4자리여야 합니다."); return; }
+    try{
+      await rankFunction({action:"delete", ranking_id:id, password});
+      await loadRankings();
+    }catch(err){
+      console.error(err);
+      alert(err.message || "랭킹 삭제에 실패했습니다.");
+    }
+  }
+
   async function loadRankings(){
     rankList.innerHTML='<div class="rank-empty">랭킹을 불러오는 중...</div>';
     try{
-      const rows = await supabaseRequest(`${RANK_TABLE}?select=initials,score,stage,result,created_at&order=score.desc,created_at.asc&limit=10`);
+      const rows = await supabaseRequest(`${RANK_TABLE}?select=id,initials,score,stage,result,created_at&order=score.desc,created_at.asc&limit=10`);
       if(!rows || rows.length===0){
         rankList.innerHTML='<div class="rank-empty">아직 등록된 기록이 없습니다. 첫 번째 랭커가 되어보세요!</div>';
         return;
@@ -472,7 +499,9 @@ canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13
           <div class="rank-name">${escapeHtml(r.initials)}</div>
           <div class="rank-score">${Number(r.score).toLocaleString()}점</div>
           <div class="rank-stage">${r.result==="clear"?"ALL CLEAR":`STAGE ${r.stage}`}</div>
+          <button type="button" class="rank-delete" data-rank-id="${r.id}" data-rank-name="${escapeHtml(r.initials)}">삭제</button>
         </div>`).join("");
+      rankList.querySelectorAll(".rank-delete").forEach(btn=>btn.addEventListener("click",()=>deleteRanking(Number(btn.dataset.rankId),btn.dataset.rankName)));
     }catch(err){
       console.error(err);
       rankList.innerHTML='<div class="rank-empty">랭킹 서버에 연결하지 못했습니다. 게임은 계속 시작할 수 있습니다.</div>';
@@ -494,8 +523,9 @@ canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13
       rankFinalScore.textContent=Number(score).toLocaleString();
       rankFinalStage.textContent=`${stage}/5`;
       rankFinalResult.textContent=result==="clear"?"ALL CLEAR":"GAME OVER";
-      rankStatus.textContent=rankSubmittedForRun?"이 기록은 이미 저장되었습니다.":"영문/숫자 1~3자로 이니셜을 입력하세요.";
+      rankStatus.textContent=rankSubmittedForRun?"이 기록은 이미 저장되었습니다.":"이니셜과 삭제용 숫자 비밀번호 4자리를 입력하세요.";
       rankInitials.value="";
+      rankPassword.value="";
     }
     await loadRankings();
     (mode==="submit"?rankInitials:rankStart).focus();
@@ -515,14 +545,17 @@ canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13
       rankInitials.focus();
       return;
     }
+    const password=rankPassword.value.replace(/\D/g,"").slice(0,4);
+    rankPassword.value=password;
+    if(!/^\d{4}$/.test(password)){
+      rankStatus.textContent="⚠ 삭제용 비밀번호는 숫자 4자리로 입력하세요.";
+      rankPassword.focus();
+      return;
+    }
     rankSubmitBtn.disabled=true;
     rankStatus.textContent="기록 저장 중...";
     try{
-      await supabaseRequest(RANK_TABLE,{
-        method:"POST",
-        headers:{"Prefer":"return=minimal"},
-        body:JSON.stringify({initials, score:Math.max(0,Math.floor(score)), stage, result:rankPendingResult})
-      });
+      await rankFunction({action:"submit", initials, password, score:Math.max(0,Math.floor(score)), stage, result:rankPendingResult});
       rankSubmittedForRun=true;
       rankSubmitBtn.style.display="none";
       rankStatus.textContent="✅ 기록이 저장되었습니다!";
@@ -4073,7 +4106,9 @@ canvas:focus{border-color:var(--mg-blue);box-shadow:0 0 0 3px rgba(11,94,184,.13
     rankStart.focus();
   });
   rankInitials.addEventListener("input",()=>{ rankInitials.value=rankInitials.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,3); });
-  rankInitials.addEventListener("keydown",e=>{ if(e.key==="Enter") submitRanking(); });
+  rankInitials.addEventListener("keydown",e=>{ if(e.key==="Enter") rankPassword.focus(); });
+  rankPassword.addEventListener("input",()=>{ rankPassword.value=rankPassword.value.replace(/\D/g,"").slice(0,4); });
+  rankPassword.addEventListener("keydown",e=>{ if(e.key==="Enter") submitRanking(); });
 
   pauseBtn.addEventListener("click",()=>{
     if(gameOver||clear)return;
