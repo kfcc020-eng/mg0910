@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MG 지점 경영 대시보드</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7"></script>
 
   <style>
@@ -44,6 +44,25 @@
       padding:10px 14px;font-weight:700;cursor:pointer
     }
     button:disabled{opacity:.55;cursor:default}
+    button.secondary{background:#fff;color:var(--primary);border:1px solid var(--line)}
+    .connection-card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      padding:18px;box-shadow:var(--shadow);margin-bottom:18px
+    }
+    .connection-card h2{margin:0 0 6px;font-size:17px}
+    .connection-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+    .connection-grid{
+      display:grid;grid-template-columns:minmax(260px,1.15fr) minmax(320px,1.6fr) auto;
+      gap:12px;align-items:end;margin-top:14px
+    }
+    .field label{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:var(--text)}
+    .field input{
+      width:100%;height:42px;border:1px solid var(--line);border-radius:11px;background:#fff;
+      padding:0 12px;color:var(--text);font:inherit;outline:none
+    }
+    .field input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+    .connection-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .security-note{margin-top:10px!important;font-size:12px!important}
     .summary{
       display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px
     }
@@ -94,6 +113,9 @@
       .card.wide{grid-column:auto}
       header{flex-direction:column}
       .actions{justify-content:flex-start}
+      .connection-grid{grid-template-columns:1fr}
+      .connection-actions{align-items:stretch}
+      .connection-actions button{flex:1}
     }
     @media (max-width:540px){
       .summary{grid-template-columns:1fr}
@@ -106,13 +128,33 @@
     <header>
       <div>
         <h1>MG 지점 경영 대시보드</h1>
-        <div class="subtitle">Supabase 실시간 조회 · 페이지를 열 때마다 최신 데이터를 다시 불러옵니다.</div>
+        <div class="subtitle">Supabase URL과 Publishable/Anon Key를 입력해 지점 데이터를 조회합니다.</div>
       </div>
       <div class="actions">
-        <div id="status" class="status">데이터 불러오는 중…</div>
-        <button id="refreshBtn" type="button">새로고침</button>
+        <div id="status" class="status">연결 정보 입력 필요</div>
+        <button id="refreshBtn" type="button" disabled>새로고침</button>
       </div>
     </header>
+
+    <section class="connection-card" aria-labelledby="connectionTitle">
+      <h2 id="connectionTitle">Supabase 연결 설정</h2>
+      <p>Project URL과 브라우저 공개용 Publishable Key를 입력한 뒤 연결하세요. 기존 프로젝트의 Anon Key도 사용할 수 있습니다.</p>
+      <div class="connection-grid">
+        <div class="field">
+          <label for="supabaseUrl">Supabase URL</label>
+          <input id="supabaseUrl" type="url" inputmode="url" autocomplete="off" placeholder="https://your-project.supabase.co" />
+        </div>
+        <div class="field">
+          <label for="supabaseKey">Publishable Key <span style="font-weight:500;color:var(--muted)">(Legacy Anon 지원)</span></label>
+          <input id="supabaseKey" type="password" autocomplete="off" placeholder="sb_publishable_... 또는 anon key" />
+        </div>
+        <div class="connection-actions">
+          <button id="connectBtn" type="button">연결 및 조회</button>
+          <button id="toggleKeyBtn" class="secondary" type="button" aria-pressed="false">Key 보기</button>
+        </div>
+      </div>
+      <p class="security-note">※ 보안을 위해 <strong>service_role / secret key</strong>는 브라우저에 입력하지 마세요. 이 파일은 입력한 Key를 localStorage에 저장하지 않습니다.</p>
+    </section>
 
     <div id="errorBox" class="error"></div>
 
@@ -177,19 +219,14 @@
     </section>
 
     <div class="footer-note">
-      ※ 이 페이지는 Supabase publishable key를 사용하는 브라우저용 예시입니다.
-      운영 공개 전에는 RLS 정책을 적용해 읽기 권한만 허용하는 구성을 권장합니다.
+      ※ 브라우저에서는 Publishable Key 사용을 권장합니다. 운영 공개 전에는 RLS를 활성화하고,
+      필요한 테이블만 Data API에 노출한 뒤 최소한의 SELECT 권한과 정책을 적용하세요.
     </div>
   </div>
 
   <script>
-    const SUPABASE_URL = "https://exbttjwwmccoaabjhazn.supabase.co";
-    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_z_VqKliDDzltfhvqwEWbXA_Rm45qmnP";
-
     const { createClient } = supabase;
-    const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-      auth: { persistSession: false, autoRefreshToken: false }
-    });
+    let db = null;
 
     const fmtInt = new Intl.NumberFormat("ko-KR");
     const fmtAmount = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 1 });
@@ -224,8 +261,94 @@
       charts = [];
     }
 
+    function normalizeUrl(value) {
+      const raw = String(value || "").trim().replace(/\/+$/, "");
+      if (!raw) throw new Error("Supabase URL을 입력해주세요.");
+
+      let parsed;
+      try {
+        parsed = new URL(raw);
+      } catch {
+        throw new Error("Supabase URL 형식이 올바르지 않습니다.");
+      }
+
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        throw new Error("Supabase URL은 http:// 또는 https:// 형식이어야 합니다.");
+      }
+      return raw;
+    }
+
+    function looksLikePrivilegedKey(key) {
+      const value = String(key || "").trim();
+      if (value.startsWith("sb_secret_")) return true;
+
+      const parts = value.split(".");
+      if (parts.length === 3) {
+        try {
+          const normalized = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+          const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "=");
+          const payload = JSON.parse(atob(padded));
+          return payload?.role === "service_role";
+        } catch {
+          return false;
+        }
+      }
+      return false;
+    }
+
+    function createSupabaseClientFromInputs() {
+      clearError();
+      const url = normalizeUrl(document.getElementById("supabaseUrl").value);
+      const key = document.getElementById("supabaseKey").value.trim();
+
+      if (!key) throw new Error("Publishable/Anon Key를 입력해주세요.");
+      if (looksLikePrivilegedKey(key)) {
+        throw new Error("service_role 또는 secret key는 브라우저에서 사용하면 안 됩니다. Publishable/Anon Key를 입력해주세요.");
+      }
+
+      db = createClient(url, key, {
+        auth: { persistSession: false, autoRefreshToken: false }
+      });
+      document.getElementById("refreshBtn").disabled = false;
+    }
+
+    async function connectAndFetch() {
+      const connectBtn = document.getElementById("connectBtn");
+      connectBtn.disabled = true;
+      setStatus("Supabase 연결 중…");
+
+      try {
+        createSupabaseClientFromInputs();
+        await fetchAllData();
+      } catch (err) {
+        console.error(err);
+        db = null;
+        document.getElementById("refreshBtn").disabled = true;
+        showError(err?.message || String(err));
+        setStatus("연결 실패");
+      } finally {
+        connectBtn.disabled = false;
+      }
+    }
+
+    function formatSupabaseError(err) {
+      const code = err?.code ? ` [${err.code}]` : "";
+      const message = err?.message || String(err);
+
+      if (err?.code === "42501") {
+        return `Supabase 권한 오류${code}: ${message} · 해당 테이블이 Data API에 노출되어 있는지, anon 역할에 SELECT 권한이 있는지, RLS SELECT 정책이 허용되어 있는지 확인해주세요.`;
+      }
+      return `Supabase 데이터를 불러오지 못했습니다${code}: ${message}`;
+    }
+
     async function fetchAllData() {
       clearError();
+      if (!db) {
+        showError("먼저 Supabase URL과 Key를 입력하고 ‘연결 및 조회’를 눌러주세요.");
+        setStatus("연결 정보 입력 필요");
+        return;
+      }
+
       setStatus("최신 데이터 조회 중…");
       document.getElementById("refreshBtn").disabled = true;
 
@@ -251,10 +374,10 @@
         setStatus("최종 조회 " + new Date().toLocaleString("ko-KR"));
       } catch (err) {
         console.error(err);
-        showError("Supabase 데이터를 불러오지 못했습니다: " + (err?.message || String(err)));
+        showError(formatSupabaseError(err));
         setStatus("조회 실패");
       } finally {
-        document.getElementById("refreshBtn").disabled = false;
+        document.getElementById("refreshBtn").disabled = !db;
       }
     }
 
@@ -397,8 +520,23 @@
         .replaceAll("'", "&#039;");
     }
 
+    document.getElementById("connectBtn").addEventListener("click", connectAndFetch);
     document.getElementById("refreshBtn").addEventListener("click", fetchAllData);
-    window.addEventListener("DOMContentLoaded", fetchAllData);
+    document.getElementById("toggleKeyBtn").addEventListener("click", () => {
+      const input = document.getElementById("supabaseKey");
+      const button = document.getElementById("toggleKeyBtn");
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      button.textContent = show ? "Key 숨기기" : "Key 보기";
+      button.setAttribute("aria-pressed", String(show));
+    });
+    document.getElementById("supabaseKey").addEventListener("keydown", event => {
+      if (event.key === "Enter") connectAndFetch();
+    });
+    window.addEventListener("DOMContentLoaded", () => {
+      setStatus("연결 정보 입력 필요");
+      document.getElementById("supabaseUrl").focus();
+    });
   </script>
 </body>
 </html>
